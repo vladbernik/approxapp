@@ -1,0 +1,65 @@
+import React, { useState, useEffect } from 'react';
+import { Line } from 'react-chartjs-2';
+import { Chart, registerables } from 'chart.js';
+
+
+Chart.register(...registerables);
+
+const ExponentialChart = ({ data, a, b }) => {
+  const [chartData, setChartData] = useState(null);
+
+  useEffect(() => {
+    if (data.length && a !== null && b !== null) {
+      const aValues = data.slice(1).map(row => parseFloat(row[a]));
+      const bValues = data.slice(1).map(row => parseFloat(row[b]));
+
+      const chartPoints = aValues.map((x, index) => {
+        const y =  bValues[index];
+        //const y = aValues[index] * x +bValues[index];
+        //const y = aValues[index] * Math.exp(bValues[index] * x);
+        return { x, y };
+      });
+
+      const chartData = {
+        datasets: [
+          {
+            label: 'Экспоненциальная функция',
+            data: chartPoints,
+            fill: false,
+            borderColor: 'blue',
+            showLine: true,
+          },
+        ],
+      };
+
+      setChartData(chartData);
+    }
+  }, [data, a, b]);
+
+  return chartData ? (
+    <Line
+      data={chartData}
+      options={{
+        scales: {
+          x: {
+            type: 'linear',
+            title: {
+              display: true,
+              text: 'Значения a',
+            },
+          },
+          y: {
+            title: {
+              display: true,
+              text: 'Экспоненциальная функция',
+            },
+          },
+        },
+      }}
+    />
+  ) : (
+    <p>Выберите параметры a и b.</p>
+  );
+};
+
+export default ExponentialChart;

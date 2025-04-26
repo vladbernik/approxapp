@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
+import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { useTable, useRowSelect } from 'react-table';
 import * as XLSX from 'xlsx';
 import { isEqual } from 'lodash';
@@ -9,7 +9,6 @@ import StressStrainChart from './StressStrainChart';
 import ExponentialChart from './ExponentialChart';
 import '../styles/App.css'
 import ExponentialApproximation from './ExponentialApproximation';
-
 
 // const ExcelReader = () => {
 //   const [excelData, setExcelData] = useState(null);
@@ -119,10 +118,10 @@ import ExponentialApproximation from './ExponentialApproximation';
 //           )}
 
 //           {/* Компонент для аппроксимации */}
-//           <ExponentialApproximation 
-//             data={excelData} 
-//             lambdas={lambdas} 
-//             setLambdas={setLambdas} 
+//           <ExponentialApproximation
+//             data={excelData}
+//             lambdas={lambdas}
+//             setLambdas={setLambdas}
 //           />
 
 //           {machineParams && (
@@ -139,7 +138,7 @@ import ExponentialApproximation from './ExponentialApproximation';
 
 // export default ExcelReader;
 
-const ExcelReader = ({ onDataLoad }) => {
+function ExcelReader({ onDataLoad }) {
   const [excelData, setExcelData] = useState(null);
   const [displayedRows, setDisplayedRows] = useState(25);
   const [showTable, setShowTable] = useState(true);
@@ -150,7 +149,7 @@ const ExcelReader = ({ onDataLoad }) => {
 
     reader.onload = (event) => {
       const binaryString = event.target.result;
-      const workbook = XLSX.read(binaryString, { type: "binary" });
+      const workbook = XLSX.read(binaryString, { type: 'binary' });
       const sheetName = workbook.SheetNames[0];
       const sheet = workbook.Sheets[sheetName];
       const data = XLSX.utils.sheet_to_json(sheet, { header: 1 });
@@ -172,7 +171,7 @@ const ExcelReader = ({ onDataLoad }) => {
       {excelData && (
         <>
           <button onClick={() => setShowTable(!showTable)}>
-            {showTable ? "Скрыть данные" : "Показать данные"}
+            {showTable ? 'Скрыть данные' : 'Показать данные'}
           </button>
 
           {showTable && (
@@ -203,6 +202,6 @@ const ExcelReader = ({ onDataLoad }) => {
       )}
     </div>
   );
-};
+}
 
 export default ExcelReader;

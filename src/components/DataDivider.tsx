@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-const DataDivider = ({ columns, data, onDivide }) => {
+function DataDivider({ columns, data, onDivide }) {
   const [selectedColumns, setSelectedColumns] = useState([]);
   const [selectedCells, setSelectedCells] = useState([]);
 
@@ -65,6 +65,6 @@ const DataDivider = ({ columns, data, onDivide }) => {
       <button onClick={handleDivide}>Divide Data</button>
     </div>
   );
-};
+}
 
 export default DataDivider;

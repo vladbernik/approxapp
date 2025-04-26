@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Line } from 'react-chartjs-2';
 import { Chart, registerables } from 'chart.js';
 
-
 Chart.register(...registerables);
 
-const ExponentialChart = ({ data, a, b }) => {
+function ExponentialChart({ data, a, b }) {
   const [chartData, setChartData] = useState(null);
 
   useEffect(() => {
@@ -60,6 +59,6 @@ const ExponentialChart = ({ data, a, b }) => {
   ) : (
     <p>Выберите параметры a и b.</p>
   );
-};
+}
 
 export default ExponentialChart;

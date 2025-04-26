@@ -1,19 +1,19 @@
-import React, { useState } from "react";
-import { Line } from "react-chartjs-2";
-import * as math from "mathjs";
+import { useState } from 'react';
+import { Line } from 'react-chartjs-2';
+import * as math from 'mathjs';
 
-const LinearizationApproximation = ({ data, selectedXColumnIndex, selectedYColumnIndex }) => {
+function LinearizationApproximation({ data, selectedXColumnIndex, selectedYColumnIndex }) {
   const [approxParams, setApproxParams] = useState(null);
 
   const handleLinearize = () => {
     if (selectedXColumnIndex === null || selectedYColumnIndex === null) {
-      alert("Выберите колонки X и Y");
+      alert('Выберите колонки X и Y');
       return;
     }
 
     const xValues = data.slice(1).map((row) => parseFloat(row[selectedXColumnIndex]) || 0);
     const yValues = data.slice(1).map((row) => parseFloat(row[selectedYColumnIndex]) || 0);
-    
+
     // Линеаризация
     const lnY = yValues.map((y) => (y > 0 ? Math.log(y) : 0));
     //
@@ -32,7 +32,9 @@ const LinearizationApproximation = ({ data, selectedXColumnIndex, selectedYColum
   };
 
   const renderApproximation = () => {
-    if (!approxParams) return null;
+    if (!approxParams) {
+ return null;
+}
 
     const { C0, lambda } = approxParams;
     const approxYValues = data.slice(1).map((row) => {
@@ -46,15 +48,15 @@ const LinearizationApproximation = ({ data, selectedXColumnIndex, selectedYColum
           labels: data.slice(1).map((row) => row[selectedXColumnIndex]),
           datasets: [
             {
-              label: "Исходные данные",
+              label: 'Исходные данные',
               data: data.slice(1).map((row) => row[selectedYColumnIndex]),
-              borderColor: "blue",
+              borderColor: 'blue',
               fill: false,
             },
             {
-              label: "Линеаризованное приближение",
+              label: 'Линеаризованное приближение',
               data: approxYValues,
-              borderColor: "red",
+              borderColor: 'red',
               fill: false,
             },
           ],
@@ -75,6 +77,6 @@ const LinearizationApproximation = ({ data, selectedXColumnIndex, selectedYColum
       {renderApproximation()}
     </div>
   );
-};
+}
 
 export default LinearizationApproximation;

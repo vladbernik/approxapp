@@ -1,0 +1,17 @@
+.container {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  align-items: center;
+}
+
+.logo {
+  max-width: 48px;
+  max-height: 48px;
+  border-radius: 6px;
+  border: 1px solid #124149;
+}
+
+.projName {
+  font-family: "Archivo Black", sans-serif;
+}

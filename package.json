@@ -9,6 +9,7 @@
     "eject": "react-scripts eject"
   },
   "dependencies": {
+    "antd": "^5.24.9",
     "chart.js": "^4.4.3",
     "mathjs": "^13.2.0",
     "react": "^18.2.0",

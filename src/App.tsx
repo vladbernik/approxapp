@@ -1,10 +1,13 @@
 import { useState } from 'react';
-import ExcelReader from './components/ExcelReader';
+import { Input, Select } from 'antd';
+import ExcelReaderWithTable from './components/ExcelReaderWithTable';
 import ExponentialApproximation from './components/ExponentialApproximation';
 import PolynomialApproximation from './components/PolynomialApproximation';
-import './styles/App.css';
 import LinearizationApproximation from './components/LinearizationApproximation';
+import Header from './components/Header';
+import s from './App.module.css'
 
+// eslint-disable-next-line complexity
 function App() {
   const [data, setData] = useState([]);
   const [columns, setColumns] = useState([]);
@@ -20,91 +23,69 @@ function App() {
   };
 
   return (
-      <div className="App">
-        <header className="App-header">
-          <div className="App-header-top">
-            <div className="triangle" />
-            <div className="triangle-text">Выбор аппроксимации</div>
-          </div>
+    <div className={s.container}>
+      <Header/>
 
-          {/* ExcelReader - загрузка и отображение данных */}
-          <ExcelReader onDataLoad={handleExcelData} />
+      {approxType && (
+        <div className={s.selectContainer}>
+          <label>Значения для X и Y</label>
+          <Select
+            placeholder="Выберите X"
+            value={selectedXColumnIndex}
+            onChange={(value) => setSelectedXColumnIndex(value)}
+            options={columns.map((col, index) => ({
+              label: col,
+              value: col,
+            }))}
+          />
+          <Select
+            placeholder="Выберите Y"
+            value={selectedYColumnIndex}
+            onChange={(value) => setSelectedYColumnIndex(value)}
+            options={columns.map((col, index) => ({
+              label: col,
+              value: col,
+            }))}
+          />
+        </div>
+      )}
 
-          {/* Выбор типа аппроксимации */}
-          {data.length > 0 && (
-              <div className="select-container">
-                <label>Выберите тип аппроксимации:</label>
-                <select value={approxType} onChange={(e) => setApproxType(e.target.value)}>
-                  <option value="">Выберите...</option>
-                  <option value="polynomial">Полиномиальная</option>
-                  <option value="exponential">Экспоненциальная</option>
-                  <option value="linearization">Линеаризация</option>
-                </select>
-              </div>
-          )}
+      {approxType === 'polynomial' && (
+        <div className={s.selectDegreeContainer}>
+          <label>Степень полинома:</label>
+          <Input type="number" value={degree} min="1" max="6" onChange={(e) => setDegree(Number(e.target.value))}/>
+        </div>
+      )}
 
-          {/* Выбор колонок X и Y */}
-          {approxType && (
-              <div className="select-container">
-                <label>X:</label>
-                <select value={selectedXColumnIndex || ''} onChange={(e) => setSelectedXColumnIndex(Number(e.target.value))}>
-                  <option value="">Выберите X</option>
-                  {columns.map((col, index) => (
-                      <option key={index} value={index}>
-                        {col}
-                      </option>
-                  ))}
-                </select>
+      {approxType === 'polynomial' && data.length > 0 && selectedXColumnIndex !== null && selectedYColumnIndex !== null && (
+        <PolynomialApproximation
+          data={data}
+          degree={degree}
+          selectedXColumnIndex={selectedXColumnIndex}
+          selectedYColumnIndex={selectedYColumnIndex}
+        />
+      )}
 
-                <label>Y:</label>
-                <select value={selectedYColumnIndex || ''} onChange={(e) => setSelectedYColumnIndex(Number(e.target.value))}>
-                  <option value="">Выберите Y</option>
-                  {columns.map((col, index) => (
-                      <option key={index} value={index}>
-                        {col}
-                      </option>
-                  ))}
-                </select>
-              </div>
-          )}
+      {approxType === 'exponential' && data.length > 0 && selectedXColumnIndex !== null && selectedYColumnIndex !== null && (
+        <ExponentialApproximation
+          data={data}
+          lambdas={lambdas}
+          setLambdas={setLambdas}
+          selectedXColumnIndex={selectedXColumnIndex}
+          selectedYColumnIndex={selectedYColumnIndex}
+        />
+      )}
 
-          {/* Настройки аппроксимации */}
-          {approxType === 'polynomial' && (
-              <div className="select-container">
-                <label>Степень полинома:</label>
-                <input type="number" value={degree} min="1" max="10" onChange={(e) => setDegree(Number(e.target.value))} />
-              </div>
-          )}
-
-          {/* Рендеринг выбранного метода аппроксимации */}
-          {approxType === 'polynomial' && data.length > 0 && selectedXColumnIndex !== null && selectedYColumnIndex !== null && (
-              <PolynomialApproximation
-                  data={data}
-                  degree={degree}
-                  selectedXColumnIndex={selectedXColumnIndex}
-                  selectedYColumnIndex={selectedYColumnIndex}
-              />
-          )}
-
-          {approxType === 'exponential' && data.length > 0 && selectedXColumnIndex !== null && selectedYColumnIndex !== null && (
-              <ExponentialApproximation
-                  data={data}
-                  lambdas={lambdas}
-                  setLambdas={setLambdas}
-                  selectedXColumnIndex={selectedXColumnIndex}
-                  selectedYColumnIndex={selectedYColumnIndex}
-              />
-          )}
-
-          {approxType === 'linearization' && data.length > 0 && selectedXColumnIndex !== null && selectedYColumnIndex !== null && (
-              <LinearizationApproximation
-                  data={data}
-                  selectedXColumnIndex={selectedXColumnIndex}
-                  selectedYColumnIndex={selectedYColumnIndex}
-              />
-          )}
-        </header>
-      </div>
+      {approxType === 'linearization' && data.length > 0 && selectedXColumnIndex !== null && selectedYColumnIndex !== null && (
+        <LinearizationApproximation
+          data={data}
+          selectedXColumnIndex={selectedXColumnIndex}
+          selectedYColumnIndex={selectedYColumnIndex}
+        />
+      )}
+      <ExcelReaderWithTable data={data} onDataLoad={handleExcelData} approxType={approxType}
+                            setApproxType={setApproxType}/>
+    </div>
   );
 }
 

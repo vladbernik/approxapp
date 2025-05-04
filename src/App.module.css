@@ -1,0 +1,23 @@
+.container {
+  max-width: 1240px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  padding: 20px 40px;
+  margin: auto;
+}
+
+.selectContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-width: 180px;
+}
+
+.selectDegreeContainer {
+  display: flex;
+  max-width: 180px;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 12px;
+}

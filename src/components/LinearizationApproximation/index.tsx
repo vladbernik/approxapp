@@ -33,8 +33,8 @@ function LinearizationApproximation({ data, selectedXColumnIndex, selectedYColum
 
   const renderApproximation = () => {
     if (!approxParams) {
- return null;
-}
+      return null;
+    }
 
     const { C0, lambda } = approxParams;
     const approxYValues = data.slice(1).map((row) => {

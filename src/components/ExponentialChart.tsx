@@ -13,9 +13,7 @@ function ExponentialChart({ data, a, b }) {
       const bValues = data.slice(1).map(row => parseFloat(row[b]));
 
       const chartPoints = aValues.map((x, index) => {
-        const y =  bValues[index];
-        //const y = aValues[index] * x +bValues[index];
-        //const y = aValues[index] * Math.exp(bValues[index] * x);
+        const y = bValues[index];
         return { x, y };
       });
 

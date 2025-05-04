@@ -1,0 +1,159 @@
+import { useState } from 'react';
+import { Line } from 'react-chartjs-2';
+import * as math from 'mathjs';
+import './s.module.css';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js';
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+);
+
+function ExponentialApproximation({ data, lambdas, setLambdas, selectedXColumnIndex, selectedYColumnIndex }) {
+  console.log(selectedXColumnIndex)
+  console.log(selectedYColumnIndex)
+  const [approximationParams, setApproximationParams] = useState(null);
+  const [inputLambda, setInputLambda] = useState('');
+  console.log(lambdas)
+  const handleLambdaChange = (index, value) => {
+    const newLambdas = [...lambdas];
+    newLambdas[index] = parseFloat(value);
+    setLambdas(newLambdas);
+  };
+
+  const handleAddLambda = () => {
+    setLambdas([...lambdas, parseFloat(inputLambda)]);
+    setInputLambda('');
+  };
+
+  const handleDeleteLambda = (index) => {
+    const newLambdas = lambdas.filter((_, i) => i !== index);
+    setLambdas(newLambdas);
+  };
+
+  const handleCalculateApproximation = () => {
+    // Проверка на выбранные индексы
+    if (selectedXColumnIndex === null || selectedYColumnIndex === null) {
+      alert('Пожалуйста, выберите колонки X и Y.');
+      return;
+    }
+
+    console.log(data)
+    const xValues = data.map((row, index: number) => typeof row[index] !== 'string' && row[0]);
+    console.log(xValues);
+    const yValues = data.map((row, index: number) => typeof row[index] !== 'string' && row[1]);
+
+    const A = xValues.map((x) =>
+      [1, ...lambdas.map((lambda) => math.exp(lambda * x))]
+    );
+
+    console.log(A)
+    const Y = yValues;
+
+    const AT = math.transpose(A);
+    const ATA = math.multiply(AT, A);
+    const ATY = math.multiply(AT, Y);
+    const solution = math.lusolve(ATA, ATY);
+    const yParams = solution.map((val) => val[0]);
+
+    setApproximationParams(yParams);
+  };
+
+  const renderApproximation = () => {
+    if (!approximationParams) {
+ return null;
+}
+
+    const approxYValues = data.map((row) => {
+      const x = row[0];
+      return (
+        approximationParams[0] +
+        lambdas.reduce((sum, lambda, i) => {
+          return sum + approximationParams[i + 1] * math.exp(lambda * x);
+        }, 0)
+      );
+    });
+
+    return (
+      <Line key={math.random()}
+        data={{
+          labels: data.map((row, index) => (typeof row[index] !== 'string' && row[0])),
+          datasets: [
+            {
+              label: 'Исходные данные',
+              data: data.map((row, index) => typeof row[index] !== 'string' && row[1]),
+              borderColor: 'blue',
+              fill: false,
+            },
+            {
+              label: 'Экспоненциальная аппроксимация',
+              data: approxYValues,
+              borderColor: 'red',
+              fill: false,
+            },
+          ],
+        }}
+      />
+    );
+  };
+
+  return (
+    <div className="exponential-approximation">
+      <h4>Лямбды</h4>
+      {lambdas.map((lambda, index) => (
+        <div key={index} style={{ display: 'flex', gap: '10px', marginBottom: '10px' }}>
+          <label>λ{index + 1}: </label>
+          <input
+            type="number"
+            value={lambda}
+            onChange={(e) => handleLambdaChange(index, e.target.value)}
+            style={{ width: '100px' }}
+          />
+          <button onClick={() => handleDeleteLambda(index)}>Удалить λ</button>
+        </div>
+      ))}
+      <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
+        <input
+          type="number"
+          value={inputLambda}
+          onChange={(e) => setInputLambda(e.target.value)}
+          placeholder="Добавить новую λ"
+          style={{ width: '100px' }}
+        />
+        <button onClick={handleAddLambda}>Добавить λ</button>
+      </div>
+
+      <button onClick={handleCalculateApproximation} style={{ marginTop: '20px' }}>
+        Вычислить аппроксимацию
+      </button>
+
+      {approximationParams && (
+        <div>
+          <h4>Параметры аппроксимации (y_j)</h4>
+          <ul>
+            {approximationParams.map((param, index) => (
+              <li key={index}>y{index}: {param.toFixed(4)}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      <div>{renderApproximation()}</div>
+    </div>
+  );
+}
+export default ExponentialApproximation;

@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
-import ExponentialApproximation from './ExponentialApproximation';
-import PolynomialApproximation from './PolynomialApproximation';
+import { useState } from 'react';
+import ExponentialApproximation from '../ExponentialApproximation';
+import PolynomialApproximation from '../PolynomialApproximation';
 
-function ApproximationSelector({ data }) {
+function ApproximationSelectorV1({ data }) {
   const [approximationType, setApproximationType] = useState('exponential');
   const [selectedXColumnIndex, setSelectedXColumnIndex] = useState(0);
   const [selectedYColumnIndex, setSelectedYColumnIndex] = useState(1);
 
-  const [lambdas, setLambdas] = useState([0.1, 0.5, 1]); // Для экспоненциальной
-  const [degree, setDegree] = useState(2); // Для полиномиальной
+  const [lambdas, setLambdas] = useState([0.1, 0.5, 1]);
+  const [degree, setDegree] = useState(2);
   return (
     <div>
       <h3>Выбор аппроксимации</h3>
@@ -69,4 +69,4 @@ function ApproximationSelector({ data }) {
   );
 }
 
-export default ApproximationSelector;
+export default ApproximationSelectorV1;

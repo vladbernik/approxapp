@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Line } from 'react-chartjs-2';
 import * as math from 'mathjs';
-import './s.module.css';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -12,6 +11,8 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
+import { Button, Input } from 'antd';
+import s from './s.module.css';
 
 ChartJS.register(
   CategoryScale,
@@ -24,11 +25,8 @@ ChartJS.register(
 );
 
 function ExponentialApproximation({ data, lambdas, setLambdas, selectedXColumnIndex, selectedYColumnIndex }) {
-  console.log(selectedXColumnIndex)
-  console.log(selectedYColumnIndex)
   const [approximationParams, setApproximationParams] = useState(null);
   const [inputLambda, setInputLambda] = useState('');
-  console.log(lambdas)
   const handleLambdaChange = (index, value) => {
     const newLambdas = [...lambdas];
     newLambdas[index] = parseFloat(value);
@@ -53,15 +51,13 @@ function ExponentialApproximation({ data, lambdas, setLambdas, selectedXColumnIn
     }
 
     console.log(data)
-    const xValues = data.map((row, index: number) => typeof row[index] !== 'string' && row[0]);
-    console.log(xValues);
-    const yValues = data.map((row, index: number) => typeof row[index] !== 'string' && row[1]);
+    const xValues = data.map((row, index: number) => typeof row[index] !== 'string' && row[selectedXColumnIndex]);
+    const yValues = data.map((row, index: number) => typeof row[index] !== 'string' && row[selectedYColumnIndex]);
 
     const A = xValues.map((x) =>
       [1, ...lambdas.map((lambda) => math.exp(lambda * x))]
     );
 
-    console.log(A)
     const Y = yValues;
 
     const AT = math.transpose(A);
@@ -112,34 +108,34 @@ function ExponentialApproximation({ data, lambdas, setLambdas, selectedXColumnIn
   };
 
   return (
-    <div className="exponential-approximation">
+    <div className={s.exponentialApproximation}>
       <h4>Лямбды</h4>
       {lambdas.map((lambda, index) => (
-        <div key={index} style={{ display: 'flex', gap: '10px', marginBottom: '10px' }}>
+        <div key={index} className={s.lambdaGroup}>
           <label>λ{index + 1}: </label>
-          <input
+          <Input
             type="number"
             value={lambda}
             onChange={(e) => handleLambdaChange(index, e.target.value)}
-            style={{ width: '100px' }}
+            className={s.lambda}
           />
-          <button onClick={() => handleDeleteLambda(index)}>Удалить λ</button>
+          <Button onClick={() => handleDeleteLambda(index)}>Удалить λ</Button>
         </div>
       ))}
-      <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
-        <input
+      <div className={s.lambdaControl}>
+        <Input
+          className={s.addLambdaInput}
           type="number"
           value={inputLambda}
           onChange={(e) => setInputLambda(e.target.value)}
-          placeholder="Добавить новую λ"
-          style={{ width: '100px' }}
+          placeholder="Новая λ"
         />
-        <button onClick={handleAddLambda}>Добавить λ</button>
+        <Button onClick={handleAddLambda}>Добавить λ</Button>
       </div>
 
-      <button onClick={handleCalculateApproximation} style={{ marginTop: '20px' }}>
+      <Button type="primary" onClick={handleCalculateApproximation} style={{ marginTop: '20px' }}>
         Вычислить аппроксимацию
-      </button>
+      </Button>
 
       {approximationParams && (
         <div>

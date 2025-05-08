@@ -1,0 +1,15 @@
+.container {
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  color: red;
+  order: 1;
+  background: #fff0f0;
+  padding: 8px;
+  border-radius: 4px;
+  transition: .3s ease-in-out;
+
+  &:hover {
+    background: #ffe4e4;
+  }
+}

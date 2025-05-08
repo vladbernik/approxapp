@@ -17,8 +17,6 @@ export default function ApproximationModelViewer({ data, defaultModel }: Props) 
     models.find((m) => m.name === defaultModel) || models[0]
   );
 
-  console.log(selectedModel)
-
   const [inputs, setInputs] = useState<Record<string, number>>(() => {
     const fields = selectedModel.getInputs();
     const initialValues: Record<string, number> = {};
@@ -30,18 +28,13 @@ export default function ApproximationModelViewer({ data, defaultModel }: Props) 
 
   const [result, setResult] = useState<ComputationResult | null>(null);
 
-  console.log(data)
-
   useEffect(() => {
     if (inputs && data) {
       const computed = selectedModel.compute(inputs, data);
-      console.log(computed)
       setResult(computed);
     }
   }, [inputs, selectedModel, data]);
 
-  console.log(result)
-  console.log(selectedModel.name)
   return (
     <div>
       <h3>{selectedModel.name}</h3>

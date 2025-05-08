@@ -2,23 +2,26 @@ import { useState } from 'react';
 import * as XLSX from 'xlsx';
 import { Button, Table, Upload, UploadFile, UploadProps } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
+import { createPortal } from 'react-dom';
 import ApproximationSelector from '../ApproximationSelector';
+import UploadList from '../UploadList';
 import s from './s.module.css'
 
 interface ExcelReaderProps {
-  onDataLoad: any
+  handleExcelData: any
   approxType: string | null
   setApproxType: (approxType: string | null) => void
-  data: any
+  data: any | null
+  setData: (data: any) => void
 }
 
 const { Dragger } = Upload;
 
-// eslint-disable-next-line max-lines-per-function
-function ExcelReaderWithTable({ onDataLoad, setApproxType, approxType, data }: ExcelReaderProps) {
-  const [excelData, setExcelData] = useState(null);
+function ExcelReaderWithTable({ handleExcelData, setApproxType, approxType, setData, data }: ExcelReaderProps) {
   const [displayedRows, setDisplayedRows] = useState(25);
   const [showTable, setShowTable] = useState(true);
+
+  console.log(data)
 
   const [fileList, setFileList] = useState<UploadFile[]>([]);
 
@@ -38,8 +41,6 @@ function ExcelReaderWithTable({ onDataLoad, setApproxType, approxType, data }: E
       return rowData;
     });
 
-  console.log(approxType)
-
   const props: UploadProps = {
     name: 'file',
     multiple: false,
@@ -48,7 +49,7 @@ function ExcelReaderWithTable({ onDataLoad, setApproxType, approxType, data }: E
       let newFileList = [...info.fileList];
 
       newFileList = newFileList.slice(-1);
-
+      console.log(fileList)
       setFileList(newFileList);
 
       const file = info.file.originFileObj;
@@ -61,8 +62,7 @@ function ExcelReaderWithTable({ onDataLoad, setApproxType, approxType, data }: E
           const sheetName = workbook.SheetNames[0];
           const sheet = workbook.Sheets[sheetName];
           const data = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-          setExcelData(data);
-          onDataLoad(data);
+          handleExcelData(data);
         };
         reader.readAsBinaryString(file);
       }
@@ -70,18 +70,26 @@ function ExcelReaderWithTable({ onDataLoad, setApproxType, approxType, data }: E
     onRemove() {
       setFileList([]);
       setApproxType(null)
-      setExcelData(null);
+      setData(null);
       return true;
-    },
-    onDrop(e) {
-      console.log('Dropped files', e.dataTransfer.files);
     },
     accept: '.xlsx,.xls,.csv',
   };
 
+  const drop = () => {
+    setData(null)
+    setFileList([])
+  }
+
+  console.log(data)
+  console.log(approxType)
   return (
     <div className={s.tableContainer}>
-      <Dragger {...props} className={(approxType || excelData) && s.hideDragger}>
+      {fileList.length > 0 && createPortal(
+        <UploadList fileName={fileList[0]?.name} onDrop={drop} />,
+        document.getElementById('appBody')
+      )}
+      <Dragger {...props} className={data !== null && s.hideDragger}>
         <p className="ant-upload-drag-icon">
           <PlusOutlined />
         </p>
@@ -89,7 +97,7 @@ function ExcelReaderWithTable({ onDataLoad, setApproxType, approxType, data }: E
         <p className="ant-upload-hint">Поддерживаются файлы формата .xls, .xlsx, .csv</p>
       </Dragger>
 
-      {excelData && (
+      {data && (
         <>
           <div className={s.tableControls}>
             <Button onClick={() => setShowTable(!showTable)}>
@@ -98,18 +106,18 @@ function ExcelReaderWithTable({ onDataLoad, setApproxType, approxType, data }: E
             <ApproximationSelector setApproxType={setApproxType}/>
           </div>
 
-          {showTable && (
+          {showTable && data.length > 0 && (
             <Table
               style={{ marginTop: 16 }}
-              columns={getColumns(excelData[0])}
-              dataSource={getDataSource(excelData.slice(1, displayedRows))}
+              columns={getColumns(data[0])}
+              dataSource={getDataSource(data?.slice(1, displayedRows))}
               pagination={false}
               scroll={{ x: 'max-content' }}
               bordered
             />
           )}
 
-          {excelData.length > displayedRows && showTable && <div className={s.showMoreBtnContainer}>
+          {data.length > displayedRows && showTable && <div className={s.showMoreBtnContainer}>
               <Button className={s.showMoreBtn} onClick={() => setDisplayedRows(displayedRows + 25)}>
                   Показать больше строк
               </Button>

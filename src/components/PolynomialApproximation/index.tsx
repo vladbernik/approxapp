@@ -8,8 +8,8 @@ function PolynomialApproximation({ data, degree, selectedXColumnIndex, selectedY
 
   const calculatePolynomial = () => {
     try {
-      const xValues = data.slice(1).map((row, index) => typeof row[index] !== 'string' && parseFloat(row[0]));
-      const yValues = data.slice(1).map((row, index) => typeof row[index] !== 'string' && parseFloat(row[1]));
+      const xValues = data.slice(1).map((row) => row[selectedXColumnIndex]);
+      const yValues = data.slice(1).map((row) => row[selectedYColumnIndex]);
 
       if (xValues.some(isNaN) || yValues.some(isNaN)) {
         alert('Ошибка: В данных есть некорректные значения!');
@@ -35,18 +35,18 @@ function PolynomialApproximation({ data, degree, selectedXColumnIndex, selectedY
     }
 
     const approxYValues = data.slice(1).map((row) => {
-      const x = parseFloat(row[0]);
+      const x = row[selectedXColumnIndex];
       return coefficients.reduce((sum, coeff, i) => sum + coeff * Math.pow(x, i), 0);
     });
 
     return (
       <Line
         data={{
-          labels: data.slice(1).map((row, index) => typeof row[index] !== 'string' && row[0]),
+          labels: data.slice(1).map((row) => row[selectedXColumnIndex]),
           datasets: [
             {
               label: 'Исходные данные',
-              data: data.slice(1).map((row, index) => typeof row[index] !== 'string' && row[1]),
+              data: data.slice(1).map((row) => row[selectedYColumnIndex]),
               borderColor: 'blue',
               fill: false,
             },

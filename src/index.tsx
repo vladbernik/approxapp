@@ -12,4 +12,3 @@ const container = document.getElementById('root');
             <App />
         </React.StrictMode>
     );
-

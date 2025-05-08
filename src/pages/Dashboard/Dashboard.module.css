@@ -8,6 +8,10 @@
   order: 2;
 }
 
+.app {
+  order: 2;
+}
+
 .calculateInfo {
   order: 2;
   padding: 16px 0;

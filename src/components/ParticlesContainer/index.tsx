@@ -31,7 +31,7 @@ export default function ParticlesContainer() {
           value: '#ffffff',
         },
       },
-      fpsLimit: 120,
+      fpsLimit: 100,
       interactivity: {
         events: {
           onClick: {
@@ -78,7 +78,7 @@ export default function ParticlesContainer() {
           density: {
             enable: true,
           },
-          value: 80,
+          value: 30,
         },
         opacity: {
           value: 0.5,

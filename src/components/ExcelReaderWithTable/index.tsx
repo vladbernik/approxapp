@@ -21,8 +21,6 @@ function ExcelReaderWithTable({ handleExcelData, setApproxType, approxType, setD
   const [displayedRows, setDisplayedRows] = useState(25);
   const [showTable, setShowTable] = useState(true);
 
-  console.log(data)
-
   const [fileList, setFileList] = useState<UploadFile[]>([]);
 
   const getColumns = (headers: any[]) =>
@@ -80,8 +78,6 @@ function ExcelReaderWithTable({ handleExcelData, setApproxType, approxType, setD
     setData(null)
     setFileList([])
   }
-
-  console.log(data)
   console.log(approxType)
   return (
     <div className={s.tableContainer}>

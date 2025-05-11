@@ -27,6 +27,7 @@ ChartJS.register(
 function ExponentialApproximation({ data, lambdas, setLambdas, selectedXColumnIndex, selectedYColumnIndex }) {
   const [approximationParams, setApproximationParams] = useState(null);
   const [inputLambda, setInputLambda] = useState('');
+
   const handleLambdaChange = (index, value) => {
     const newLambdas = [...lambdas];
     newLambdas[index] = parseFloat(value);
@@ -50,7 +51,6 @@ function ExponentialApproximation({ data, lambdas, setLambdas, selectedXColumnIn
       return;
     }
 
-    console.log(data)
     const xValues = data.map((row, index: number) => typeof row[index] !== 'string' && row[selectedXColumnIndex]);
     const yValues = data.map((row, index: number) => typeof row[index] !== 'string' && row[selectedYColumnIndex]);
 
@@ -71,8 +71,8 @@ function ExponentialApproximation({ data, lambdas, setLambdas, selectedXColumnIn
 
   const renderApproximation = () => {
     if (!approximationParams) {
- return null;
-}
+      return null;
+    }
 
     const approxYValues = data.map((row) => {
       const x = row[0];
@@ -86,23 +86,23 @@ function ExponentialApproximation({ data, lambdas, setLambdas, selectedXColumnIn
 
     return (
       <Line key={math.random()}
-        data={{
-          labels: data.map((row, index) => (typeof row[index] !== 'string' && row[0])),
-          datasets: [
-            {
-              label: 'Исходные данные',
-              data: data.map((row, index) => typeof row[index] !== 'string' && row[1]),
-              borderColor: 'blue',
-              fill: false,
-            },
-            {
-              label: 'Экспоненциальная аппроксимация',
-              data: approxYValues,
-              borderColor: 'red',
-              fill: false,
-            },
-          ],
-        }}
+            data={{
+              labels: data.map((row, index) => (typeof row[index] !== 'string' && row[0])),
+              datasets: [
+                {
+                  label: 'Исходные данные',
+                  data: data.map((row, index) => typeof row[index] !== 'string' && row[1]),
+                  borderColor: 'blue',
+                  fill: false,
+                },
+                {
+                  label: 'Экспоненциальная аппроксимация',
+                  data: approxYValues,
+                  borderColor: 'red',
+                  fill: false,
+                },
+              ],
+            }}
       />
     );
   };
@@ -116,24 +116,21 @@ function ExponentialApproximation({ data, lambdas, setLambdas, selectedXColumnIn
           <Input
             type="number"
             value={lambda}
+            placeholder="λ"
             onChange={(e) => handleLambdaChange(index, e.target.value)}
             className={s.lambda}
           />
-          <Button onClick={() => handleDeleteLambda(index)}>Удалить λ</Button>
+          {index !== 0 && <Button onClick={() => handleDeleteLambda(index)}>Удалить λ</Button>}
         </div>
       ))}
       <div className={s.lambdaControl}>
-        <Input
-          className={s.addLambdaInput}
-          type="number"
-          value={inputLambda}
-          onChange={(e) => setInputLambda(e.target.value)}
-          placeholder="Новая λ"
-        />
         <Button onClick={handleAddLambda}>Добавить λ</Button>
       </div>
 
-      <Button type="primary" onClick={handleCalculateApproximation} style={{ marginTop: '20px' }}>
+      <Button type="primary"
+              onClick={handleCalculateApproximation}
+              style={{ marginTop: '20px' }}
+              disabled={(selectedXColumnIndex === undefined || selectedYColumnIndex === undefined) || lambdas.every((lambda) => isNaN(lambda))}>
         Вычислить аппроксимацию
       </Button>
 
@@ -152,4 +149,5 @@ function ExponentialApproximation({ data, lambdas, setLambdas, selectedXColumnIn
     </div>
   );
 }
+
 export default ExponentialApproximation;

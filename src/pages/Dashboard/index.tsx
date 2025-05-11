@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { Input, Select } from 'antd';
+import { Select } from 'antd';
 import PolynomialApproximation from '../../components/PolynomialApproximation';
-import LinearizationApproximation from '../../components/LinearizationApproximation';
 import ExcelReaderWithTable from '../../components/ExcelReaderWithTable';
+import PolymerLinearization from '../../components/LinearizationApproximation';
+import ExponentialApproximation from '../../components/ExponentialApproximation';
 import s from './Dashboard.module.css'
-import ExponentialApproximation from '@/components/ExponentialApproximation';
 
 // eslint-disable-next-line complexity
 export default function Dashboard() {
@@ -13,7 +13,6 @@ export default function Dashboard() {
   const [selectedXColumn, setSelectedXColumn] = useState(null);
   const [selectedYColumn, setSelectedYColumn] = useState(null);
   const [approxType, setApproxType] = useState('');
-  const [degree, setDegree] = useState(2);
   const [lambdas, setLambdas] = useState([-0.5, -0.1]);
 
   const handleExcelData = (newData) => {
@@ -29,14 +28,13 @@ export default function Dashboard() {
     setSelectedYColumn(options)
   }
 
-  console.log(data)
-
+  console.log(selectedXColumn)
   return (
     <div className={s.app}>
       {data && approxType && <div className={s.calculateInfo}>
         {approxType && (
           <div className={s.selectContainer}>
-            <label>Значения для X и Y</label>
+            <h2>Значения для X и Y</h2>
             <Select
               placeholder="Выберите X"
               value={selectedXColumn?.label}
@@ -71,24 +69,16 @@ export default function Dashboard() {
         )}
       </div>}
 
-      {approxType === 'polynomial' && (
-        <div className={s.selectDegreeContainer}>
-          <label>Степень полинома:</label>
-          <Input type="number" value={degree} min="1" max="6" onChange={(e) => setDegree(Number(e.target.value))}/>
-        </div>
-      )}
-
       {approxType === 'polynomial' && data.length > 0 && selectedXColumn?.value !== null && selectedYColumn?.value !== null && (
         <PolynomialApproximation
           data={data}
-          degree={degree}
           selectedXColumnIndex={selectedXColumn?.index}
           selectedYColumnIndex={selectedYColumn?.index}
         />
       )}
 
       {approxType === 'linearization' && data.length > 0 && selectedXColumn?.value !== null && selectedYColumn?.value !== null && (
-        <LinearizationApproximation
+        <PolymerLinearization
           data={data}
           selectedXColumnIndex={selectedXColumn?.index}
           selectedYColumnIndex={selectedYColumn?.index}

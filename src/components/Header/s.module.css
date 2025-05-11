@@ -1,9 +1,10 @@
 .container {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 24px;
   align-items: center;
   order: 0;
+  backdrop-filter: blur(8px);
+  padding: 30px;
 }
 
 .logo {
@@ -21,4 +22,6 @@
 
 .aboutLink {
   cursor: pointer;
+  font-size: 16px;
+  font-family: "Montserrat", sans-serif;
 }

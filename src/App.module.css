@@ -19,11 +19,3 @@
   gap: 6px;
   max-width: 180px;
 }
-
-.selectDegreeContainer {
-  display: flex;
-  max-width: 180px;
-  flex-direction: column;
-  gap: 6px;
-  margin-top: 12px;
-}

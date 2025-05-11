@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { Line } from 'react-chartjs-2';
 import * as math from 'mathjs';
-import { Button } from 'antd';
+import { Button, Input } from 'antd';
+import s from './s.module.css'
 
-function PolynomialApproximation({ data, degree, selectedXColumnIndex, selectedYColumnIndex }) {
+function PolynomialApproximation({ data, selectedXColumnIndex, selectedYColumnIndex }) {
   const [coefficients, setCoefficients] = useState(null);
+  const [degree, setDegree] = useState(2);
 
   const calculatePolynomial = () => {
     try {
@@ -65,8 +67,13 @@ function PolynomialApproximation({ data, degree, selectedXColumnIndex, selectedY
   return (
     <div>
       <h3>Полиномиальное приближение</h3>
-      <Button type="primary" disabled={!degree} onClick={calculatePolynomial}>Вычислить полином</Button>
-
+      <div className={s.selectDegreeContainer}>
+        <label>Степень полинома:</label>
+        <Input type="number" value={degree} min="1" max="6" onChange={(e) => setDegree(Number(e.target.value))}/>
+      </div>
+      <Button type="primary"
+              disabled={!degree || selectedXColumnIndex === null || !selectedYColumnIndex === null}
+              onClick={calculatePolynomial}>Вычислить полином</Button>
       {coefficients && (
         <div>
           <h4>Коэффициенты полинома</h4>

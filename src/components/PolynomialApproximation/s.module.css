@@ -1,0 +1,8 @@
+.selectDegreeContainer {
+  display: flex;
+  max-width: 180px;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 12px;
+  margin-bottom: 12px;
+}

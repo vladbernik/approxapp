@@ -28,11 +28,7 @@ function ExponentialApproximation({ data, lambdas, setLambdas, selectedXColumnIn
   const [approximationParams, setApproximationParams] = useState(null);
   const [inputLambda, setInputLambda] = useState('');
   const [history, setHistory] = useState([]);
-  const [prevApproximation, setPrevApproximation] = useState(null);
-
-  useEffect(() => {
-    setApproximationParams(null);
-  }, [lambdas, selectedXColumnIndex, selectedYColumnIndex]);
+  const [prevState, setPrevState] = useState(null);
 
   const numericData = useMemo(() => {
     return data?.filter(row => {
@@ -41,6 +37,65 @@ function ExponentialApproximation({ data, lambdas, setLambdas, selectedXColumnIn
       return !isNaN(parseFloat(x)) && !isNaN(parseFloat(y));
     });
   }, [data, selectedXColumnIndex, selectedYColumnIndex]);
+
+  // Проверяем, изменились ли параметры по сравнению с предыдущим состоянием
+  const paramsChanged = useMemo(() => {
+    if (!prevState) {
+ return true;
+}
+
+    return (
+      prevState.xIndex !== selectedXColumnIndex ||
+      prevState.yIndex !== selectedYColumnIndex ||
+      prevState.lambdas.length !== lambdas.length ||
+      !prevState.lambdas.every((lambda, i) => lambda === lambdas[i])
+    );
+  }, [lambdas, selectedXColumnIndex, selectedYColumnIndex, prevState]);
+
+  // Сохраняем текущую аппроксимацию в историю при изменении параметров
+  useEffect(() => {
+    if (approximationParams && paramsChanged) {
+      const xValues = numericData?.map((row) => row[selectedXColumnIndex]) || [];
+      const yValues = numericData?.map((row) => row[selectedYColumnIndex]) || [];
+
+      const currentApproximation = {
+        params: [...approximationParams],
+        lambdas: [...lambdas],
+        xIndex: selectedXColumnIndex,
+        yIndex: selectedYColumnIndex,
+        xValues: [...xValues],
+        yValues: [...yValues],
+        timestamp: Date.now()
+      };
+
+      setHistory(prev => {
+        // Проверяем, не совпадает ли новая аппроксимация с последней в истории
+        const lastItem = prev[0];
+        if (lastItem &&
+          lastItem.xIndex === currentApproximation.xIndex &&
+          lastItem.yIndex === currentApproximation.yIndex &&
+          lastItem.lambdas.length === currentApproximation.lambdas.length &&
+          lastItem.lambdas.every((lambda, i) => lambda === currentApproximation.lambdas[i]) &&
+          lastItem.params.length === currentApproximation.params.length &&
+          lastItem.params.every((param, i) => Math.abs(param - currentApproximation.params[i]) < 0.0001)
+        ) {
+          return prev; // Не добавляем дубликат
+        }
+
+        return [currentApproximation, ...prev].slice(0, 3);
+      });
+
+      setPrevState({
+        xIndex: selectedXColumnIndex,
+        yIndex: selectedYColumnIndex,
+        lambdas: [...lambdas]
+      });
+    }
+
+    if (paramsChanged) {
+      setApproximationParams(null);
+    }
+  }, [lambdas, selectedXColumnIndex, selectedYColumnIndex, approximationParams, paramsChanged, numericData]);
 
   const handleLambdaChange = (index, value) => {
     const newLambdas = [...lambdas];
@@ -79,31 +134,8 @@ function ExponentialApproximation({ data, lambdas, setLambdas, selectedXColumnIn
     const solution = math.lusolve(ATA, ATY);
     const yParams = solution.map((val) => val[0]);
 
-    // Если есть предыдущие параметры, добавляем их в историю
-    if (prevApproximation) {
-      setHistory(prev => [prevApproximation, ...prev].slice(0, 2));
-    }
-
-    // Сохраняем текущие параметры как предыдущие для следующего расчета
-    const currentApproximation = {
-      params: yParams,
-      lambdas: [...lambdas],
-      xIndex: selectedXColumnIndex,
-      yIndex: selectedYColumnIndex,
-      xValues: [...xValues],
-      yValues: [...yValues]
-    };
-
-    setPrevApproximation(currentApproximation);
     setApproximationParams(yParams);
   };
-
-  console.log(approximationParams)
-  console.log(selectedXColumnIndex)
-  console.log(selectedYColumnIndex)
-  console.log(numericData)
-
-  console.log(history)
 
   const createHistoryGraph = (historyItem) => {
     const approxYValues = historyItem.xValues.map((x) => {
@@ -117,7 +149,7 @@ function ExponentialApproximation({ data, lambdas, setLambdas, selectedXColumnIn
 
     return (
       <Line
-        key={`history-${historyItem.xIndex}-${historyItem.yIndex}-${Date.now()}`}
+        key={`history-${historyItem.timestamp}`}
         width={400}
         height={400}
         data={{
@@ -247,10 +279,6 @@ function ExponentialApproximation({ data, lambdas, setLambdas, selectedXColumnIn
             ))}
           </div>
         </div>
-      </div>
-      <div>
-        <h4>Текущая аппроксимация</h4>
-        {approximationParams && createCurrentGraph()}
       </div>
     </div>
   );

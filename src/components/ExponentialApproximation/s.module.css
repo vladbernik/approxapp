@@ -11,6 +11,13 @@
   margin-top: 10px;
 }
 
+.selectContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-width: 180px;
+}
+
 .addLambdaInput {
   max-width: 120px;
 }
@@ -28,6 +35,8 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
+  overflow: scroll;
+  margin-left: 40px;
 }
 
 .approximationsHistory {

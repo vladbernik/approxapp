@@ -41,8 +41,8 @@ function ExponentialApproximation({ data, lambdas, setLambdas, selectedXColumnIn
   // Проверяем, изменились ли параметры по сравнению с предыдущим состоянием
   const paramsChanged = useMemo(() => {
     if (!prevState) {
- return true;
-}
+      return true;
+    }
 
     return (
       prevState.xIndex !== selectedXColumnIndex ||
@@ -82,7 +82,7 @@ function ExponentialApproximation({ data, lambdas, setLambdas, selectedXColumnIn
           return prev; // Не добавляем дубликат
         }
 
-        return [currentApproximation, ...prev].slice(0, 3);
+        return [currentApproximation, ...prev].slice(0, 10);
       });
 
       setPrevState({
@@ -270,7 +270,7 @@ function ExponentialApproximation({ data, lambdas, setLambdas, selectedXColumnIn
           )}
         </div>
         <div className={s.approximationsHistoryContainer}>
-          <h4>История (последние 2 вычисления)</h4>
+          <h4>История (последние вычисления)</h4>
           <div className={s.approximationsHistory}>
             {history?.map((item, index) => (
               <div key={index} className={s.approximationHistoryChart}>

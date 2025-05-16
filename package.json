@@ -14,6 +14,7 @@
     "@tsparticles/slim": "^3.8.1",
     "antd": "^5.24.9",
     "chart.js": "^4.4.3",
+    "classnames": "^2.5.1",
     "html-to-image": "^1.11.13",
     "mathjs": "^13.2.0",
     "react": "^18.2.0",

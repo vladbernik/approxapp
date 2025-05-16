@@ -1,6 +1,8 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Line } from 'react-chartjs-2';
 import * as math from 'mathjs';
+import * as htmlToImage from 'html-to-image';
+
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -36,6 +38,8 @@ function ExponentialApproximation({ data, lambdas, setLambdas }) {
   const [selectedXColumnLabel, setSelectedXColumnLabel] = useState('');
   const [selectedYColumnLabel, setSelectedYColumnLabel] = useState('');
 
+  const cardRef = useRef(null);
+
   useEffect(() => {
     if (data) {
       setColumns(data[0])
@@ -62,6 +66,23 @@ function ExponentialApproximation({ data, lambdas, setLambdas }) {
       !prevState.lambdas.every((lambda, i) => lambda === lambdas[i])
     );
   }, [lambdas, selectedXColumnIndex, selectedYColumnIndex, prevState]);
+
+  const saveCardAsImage = async (cardNode) => {
+    try {
+      const dataUrl = await htmlToImage.toPng(cardNode, {
+        quality: 1,
+        pixelRatio: 2, // для более четкого изображения
+        backgroundColor: '#ffffff',
+      });
+
+      const link = document.createElement('a');
+      link.download = `аппроксимация-${new Date().toLocaleString()}.png`;
+      link.href = dataUrl;
+      link.click();
+    } catch (error) {
+      console.error('Ошибка при сохранении карточки:', error);
+    }
+  };
 
   useEffect(() => {
     if (approximationParams && paramsChanged) {
@@ -172,7 +193,7 @@ function ExponentialApproximation({ data, lambdas, setLambdas }) {
     </div>
   );
 
-  const createHistoryGraph = (historyItem) => {
+  const createHistoryGraph = (historyItem, index) => {
     const approxYValues = historyItem.xValues.map((x) => {
       const numericLambdas = historyItem.lambdas.map(lambda => parseFloat(lambda) || 0);
       return (
@@ -184,43 +205,53 @@ function ExponentialApproximation({ data, lambdas, setLambdas }) {
     });
 
     return (
-      <Card
-        title={`Аппроксимация ${new Date(historyItem.timestamp).toLocaleTimeString()}`}
-        className={s.historyCard}
-      >
-        {renderParameters(
-          historyItem.params,
-          historyItem.lambdas,
-          historyItem.xLabel,
-          historyItem.yLabel
-        )}
-        <div className={s.chartContainer}>
-          <Line
-            key={`history-${historyItem.timestamp}`}
-            data={{
-              labels: historyItem.xValues.map(x => x.toFixed(4)),
-              datasets: [
-                {
-                  label: 'Исходные данные',
-                  data: historyItem.yValues,
-                  borderColor: 'blue',
-                  fill: false,
-                },
-                {
-                  label: 'Аппроксимация',
-                  data: approxYValues,
-                  borderColor: 'green',
-                  fill: false,
-                },
-              ],
-            }}
-            options={{
-              responsive: true,
-              maintainAspectRatio: false
-            }}
-          />
-        </div>
-      </Card>
+      <div ref={cardRef}>
+        <Card
+          title={`Аппроксимация ${new Date(historyItem.timestamp).toLocaleTimeString()}`}
+          className={s.historyCard}
+          extra={
+            <Button
+              size="small"
+              style={{ marginLeft: '4px' }}
+              onClick={() => saveCardAsImage(cardRef.current)}
+            >
+              Сохранить карточку
+            </Button>
+          }
+        >
+          {renderParameters(
+            historyItem.params,
+            historyItem.lambdas,
+            historyItem.xLabel,
+            historyItem.yLabel
+          )}
+          <div className={s.chartContainer}>
+            <Line
+              data={{
+                labels: historyItem.xValues.map(x => x.toFixed(4)),
+                datasets: [
+                  {
+                    label: 'Исходные данные',
+                    data: historyItem.yValues,
+                    borderColor: 'blue',
+                    fill: false,
+                  },
+                  {
+                    label: 'Аппроксимация',
+                    data: approxYValues,
+                    borderColor: 'green',
+                    fill: false,
+                  },
+                ],
+              }}
+              options={{
+                responsive: true,
+                maintainAspectRatio: false
+              }}
+            />
+          </div>
+        </Card>
+      </div>
     );
   };
 

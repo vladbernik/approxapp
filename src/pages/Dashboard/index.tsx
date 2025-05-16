@@ -32,7 +32,7 @@ export default function Dashboard() {
   return (
     <div className={s.app}>
       {data && approxType && <div className={s.calculateInfo}>
-        {approxType && (
+        {approxType && approxType !== 'exponential' && (
           <div className={s.selectContainer}>
             <h2>Значения для X и Y</h2>
             <Select

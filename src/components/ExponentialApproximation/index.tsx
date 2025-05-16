@@ -11,7 +11,7 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
-import { Button, Input } from 'antd';
+import { Button, Input, Select } from 'antd';
 import s from './s.module.css';
 
 ChartJS.register(
@@ -24,11 +24,24 @@ ChartJS.register(
   Legend
 );
 
-function ExponentialApproximation({ data, lambdas, setLambdas, selectedXColumnIndex, selectedYColumnIndex }) {
+function ExponentialApproximation({ data, lambdas, setLambdas }) {
   const [approximationParams, setApproximationParams] = useState(null);
   const [inputLambda, setInputLambda] = useState('');
   const [history, setHistory] = useState([]);
   const [prevState, setPrevState] = useState(null);
+
+  const [columns, setColumns] = useState([]);
+  const [selectedXColumnIndex, setSelectedXColumnIndex] = useState(null);
+  const [selectedYColumnIndex, setSelectedYColumnIndex] = useState(null);
+
+  const [selectedXColumnLabel, setSelectedXColumnLabel] = useState('');
+  const [selectedYColumnLabel, setSelectedYColumnLabel] = useState('');
+
+  useEffect(() => {
+    if (data) {
+      setColumns(data[0])
+    }
+  }, [data]);
 
   const numericData = useMemo(() => {
     return data?.filter(row => {
@@ -220,10 +233,43 @@ function ExponentialApproximation({ data, lambdas, setLambdas, selectedXColumnIn
     );
   };
 
+  const handleSelectedXColumnChange = (_, options) => {
+    setSelectedXColumnIndex(options.index)
+    setSelectedXColumnLabel(options.label)
+  }
+
+  const handleSelectedYColumnChange = (_, options) => {
+    setSelectedYColumnIndex(options.index)
+    setSelectedYColumnLabel(options.label)
+  }
+
   return (
     <div className={s.exponentialApproximation}>
       <div className={s.calculationInputs}>
         <div className={s.test}>
+          <div className={s.selectContainer}>
+            <h2>Значения для X и Y</h2>
+            <Select
+              placeholder="Выберите X"
+              value={selectedXColumnLabel}
+              onChange={handleSelectedXColumnChange}
+              options={columns.map((col, index) => ({
+                label: col,
+                value: col,
+                index
+              }))}
+            />
+            <Select
+              placeholder="Выберите Y"
+              value={selectedYColumnLabel}
+              onChange={handleSelectedYColumnChange}
+              options={columns.map((col, index) => ({
+                label: col,
+                value: col,
+                index
+              }))}
+            />
+          </div>
           <h4>Лямбды</h4>
           {lambdas.map((lambda, index) => (
             <div key={index} className={s.lambdaGroup}>

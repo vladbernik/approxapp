@@ -18,3 +18,25 @@
 .lambda {
   max-width: 120px;
 }
+
+.calculationInputs {
+  display: flex;
+  justify-content: space-between;
+}
+
+.approximationsHistoryContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.approximationsHistory {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+}
+
+.approximationHistoryChart {
+  width: 400px;
+  height: 400px;
+}

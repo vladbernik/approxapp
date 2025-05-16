@@ -77,8 +77,9 @@ function ExcelReaderWithTable({ handleExcelData, setApproxType, approxType, setD
   const drop = () => {
     setData(null)
     setFileList([])
+    setApproxType(null)
   }
-  console.log(approxType)
+
   return (
     <div className={s.tableContainer}>
       {fileList.length > 0 && createPortal(

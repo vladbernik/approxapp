@@ -2,7 +2,6 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Line } from 'react-chartjs-2';
 import * as math from 'mathjs';
 import * as htmlToImage from 'html-to-image';
-
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -13,7 +12,7 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
-import { Button, Input, Select, Card } from 'antd';
+import { Button, Input, Select, Card, Checkbox } from 'antd';
 import s from './s.module.css';
 
 ChartJS.register(
@@ -31,7 +30,7 @@ function ExponentialApproximation({ data, lambdas, setLambdas }) {
   const [inputLambda, setInputLambda] = useState('');
   const [history, setHistory] = useState([]);
   const [prevState, setPrevState] = useState(null);
-
+  const [useLinearizedModel, setUseLinearizedModel] = useState(false);
   const [columns, setColumns] = useState([]);
   const [selectedXColumnIndex, setSelectedXColumnIndex] = useState(null);
   const [selectedYColumnIndex, setSelectedYColumnIndex] = useState(null);
@@ -42,7 +41,7 @@ function ExponentialApproximation({ data, lambdas, setLambdas }) {
 
   useEffect(() => {
     if (data) {
-      setColumns(data[0])
+      setColumns(data[0]);
     }
   }, [data]);
 
@@ -55,23 +54,22 @@ function ExponentialApproximation({ data, lambdas, setLambdas }) {
   }, [data, selectedXColumnIndex, selectedYColumnIndex]);
 
   const paramsChanged = useMemo(() => {
-    if (!prevState) {
- return true;
-}
+    if (!prevState) return true;
 
     return (
       prevState.xIndex !== selectedXColumnIndex ||
       prevState.yIndex !== selectedYColumnIndex ||
       prevState.lambdas.length !== lambdas.length ||
-      !prevState.lambdas.every((lambda, i) => lambda === lambdas[i])
+      !prevState.lambdas.every((lambda, i) => lambda === lambdas[i]) ||
+      prevState.useLinearizedModel !== useLinearizedModel
     );
-  }, [lambdas, selectedXColumnIndex, selectedYColumnIndex, prevState]);
+  }, [lambdas, selectedXColumnIndex, selectedYColumnIndex, prevState, useLinearizedModel]);
 
   const saveCardAsImage = async (cardNode) => {
     try {
       const dataUrl = await htmlToImage.toPng(cardNode, {
         quality: 1,
-        pixelRatio: 2, // для более четкого изображения
+        pixelRatio: 2,
         backgroundColor: '#ffffff',
       });
 
@@ -90,7 +88,7 @@ function ExponentialApproximation({ data, lambdas, setLambdas }) {
       const yValues = numericData?.map((row) => row[selectedYColumnIndex]) || [];
 
       const currentApproximation = {
-        params: [...approximationParams],
+        params: { ...approximationParams },
         lambdas: [...lambdas],
         xIndex: selectedXColumnIndex,
         yIndex: selectedYColumnIndex,
@@ -98,6 +96,7 @@ function ExponentialApproximation({ data, lambdas, setLambdas }) {
         yLabel: selectedYColumnLabel,
         xValues: [...xValues],
         yValues: [...yValues],
+        useLinearizedModel,
         timestamp: Date.now()
       };
 
@@ -107,7 +106,8 @@ function ExponentialApproximation({ data, lambdas, setLambdas }) {
           lastItem.xIndex === currentApproximation.xIndex &&
           lastItem.yIndex === currentApproximation.yIndex &&
           lastItem.lambdas.length === currentApproximation.lambdas.length &&
-          lastItem.lambdas.every((lambda, i) => lambda === currentApproximation.lambdas[i])
+          lastItem.lambdas.every((lambda, i) => lambda === currentApproximation.lambdas[i]) &&
+          lastItem.useLinearizedModel === currentApproximation.useLinearizedModel
         ) {
           return prev;
         }
@@ -117,24 +117,23 @@ function ExponentialApproximation({ data, lambdas, setLambdas }) {
       setPrevState({
         xIndex: selectedXColumnIndex,
         yIndex: selectedYColumnIndex,
-        lambdas: [...lambdas]
+        lambdas: [...lambdas],
+        useLinearizedModel
       });
     }
 
     if (paramsChanged) {
       setApproximationParams(null);
     }
-  }, [lambdas, selectedXColumnIndex, selectedYColumnIndex, approximationParams, paramsChanged, numericData]);
+  }, [lambdas, selectedXColumnIndex, selectedYColumnIndex, approximationParams, paramsChanged, numericData, useLinearizedModel]);
 
   const handleLambdaChange = (index, value) => {
     const newLambdas = [...lambdas];
-    // Разрешаем любые значения (они будут преобразованы при расчете)
     newLambdas[index] = value;
     setLambdas(newLambdas);
   };
 
   const handleAddLambda = () => {
-    // Добавляем как строку, преобразование будет при расчете
     setLambdas([...lambdas, inputLambda]);
     setInputLambda('');
   };
@@ -150,28 +149,47 @@ function ExponentialApproximation({ data, lambdas, setLambdas }) {
       return;
     }
 
-    // Преобразуем лямбды в числа (если это возможно)
-    const numericLambdas = lambdas.map(lambda => {
-      const num = parseFloat(lambda);
-      return isNaN(num) ? 0 : num; // или можно выбросить ошибку
-    });
-
+    const numericLambdas = lambdas.map(lambda => parseFloat(lambda) || 0);
     const xValues = numericData.map((row) => row[selectedXColumnIndex]);
     const yValues = numericData.map((row) => row[selectedYColumnIndex]);
 
-    const A = xValues.map((x) =>
-      [1, ...numericLambdas.map((lambda) => math.exp(lambda * x))]
-    );
+    if (useLinearizedModel) {
+      // Линеаризованная модель: y ≈ a₀ + Σ a_i e^{λ_i x} + Σ b_i x e^{λ_i x}
+      const A = xValues.map((x) => [
+        1,
+        ...numericLambdas.map((lambda) => math.exp(lambda * x)),
+        ...numericLambdas.map((lambda) => x * math.exp(lambda * x)),
+      ]);
 
-    const Y = yValues;
+      const Y = yValues;
+      const AT = math.transpose(A);
+      const ATA = math.multiply(AT, A);
+      const ATY = math.multiply(AT, Y);
+      const solution = math.lusolve(ATA, ATY);
+      const params = solution.map((val) => val[0]);
 
-    const AT = math.transpose(A);
-    const ATA = math.multiply(AT, A);
-    const ATY = math.multiply(AT, Y);
-    const solution = math.lusolve(ATA, ATY);
-    const yParams = solution.map((val) => val[0]);
+      setApproximationParams({
+        a0: params[0],
+        a_i: params.slice(1, 1 + numericLambdas.length),
+        b_i: params.slice(1 + numericLambdas.length),
+        type: 'linearized',
+      });
+    } else {
+      // Обычная модель: y = a₀ + Σ a_i e^{λ_i x}
+      const A = xValues.map((x) => [1, ...numericLambdas.map((lambda) => math.exp(lambda * x))]);
+      const Y = yValues;
+      const AT = math.transpose(A);
+      const ATA = math.multiply(AT, A);
+      const ATY = math.multiply(AT, Y);
+      const solution = math.lusolve(ATA, ATY);
+      const params = solution.map((val) => val[0]);
 
-    setApproximationParams(yParams);
+      setApproximationParams({
+        a0: params[0],
+        a_i: params.slice(1),
+        type: 'standard',
+      });
+    }
   };
 
   const renderParameters = (params, lambdas, xLabel, yLabel) => (
@@ -184,24 +202,34 @@ function ExponentialApproximation({ data, lambdas, setLambdas }) {
           <li key={i}>λ{i+1}: {lambda}</li>
         ))}
       </ul>
-      <h5>Коэффициенты (y):</h5>
+      <h5>Коэффициенты:</h5>
       <ul>
-        {params.map((param, i) => (
-          <li key={i}>y{i}: {param?.toFixed(6)}</li>
+        <li>a₀: {params.a0?.toFixed(6)}</li>
+        {params.a_i?.map((a, i) => (
+          <li key={`a_${i}`}>a_{i+1}: {a?.toFixed(8)}</li>
+        ))}
+        {params.type === 'linearized' && params.b_i?.map((b, i) => (
+          <li key={`b_${i}`}>b_{i+1}: {b?.toFixed(8)}</li>
         ))}
       </ul>
     </div>
   );
 
   const createHistoryGraph = (historyItem, index) => {
+    const numericLambdas = historyItem.lambdas.map(lambda => parseFloat(lambda) || 0);
     const approxYValues = historyItem.xValues.map((x) => {
-      const numericLambdas = historyItem.lambdas.map(lambda => parseFloat(lambda) || 0);
-      return (
-        historyItem.params[0] +
-        numericLambdas.reduce((sum, lambda, i) => {
-          return sum + historyItem.params[i + 1] * math.exp(lambda * x);
-        }, 0)
-      );
+      if (historyItem.useLinearizedModel) {
+        return (
+          historyItem.params.a0 +
+          historyItem.params.a_i.reduce((sum, a, i) => sum + a * math.exp(numericLambdas[i] * x), 0) +
+          historyItem.params.b_i.reduce((sum, b, i) => sum + b * x * math.exp(numericLambdas[i] * x), 0)
+        );
+      } else {
+        return (
+          historyItem.params.a0 +
+          historyItem.params.a_i.reduce((sum, a, i) => sum + a * math.exp(numericLambdas[i] * x), 0)
+        );
+      }
     });
 
     return (
@@ -234,12 +262,16 @@ function ExponentialApproximation({ data, lambdas, setLambdas }) {
                     label: 'Исходные данные',
                     data: historyItem.yValues,
                     borderColor: 'blue',
+                    borderWidth: 0.5, 
+                    tension: 0,        
+                    pointRadius: 0.5, 
                     fill: false,
                   },
                   {
                     label: 'Аппроксимация',
                     data: approxYValues,
                     borderColor: 'green',
+                    borderWidth: 2,
                     fill: false,
                   },
                 ],
@@ -260,23 +292,23 @@ function ExponentialApproximation({ data, lambdas, setLambdas }) {
       return <div>Нажмите "Вычислить аппроксимацию" для построения графика</div>;
     }
 
-    const numericData = data.filter(row => {
-      const x = row[selectedXColumnIndex];
-      const y = row[selectedYColumnIndex];
-      return !isNaN(parseFloat(x)) && !isNaN(parseFloat(y));
-    });
-
     const xValues = numericData.map(row => parseFloat(row[selectedXColumnIndex]));
     const yValues = numericData.map(row => parseFloat(row[selectedYColumnIndex]));
-
     const numericLambdas = lambdas.map(lambda => parseFloat(lambda) || 0);
+
     const approxYValues = xValues.map((x) => {
-      return (
-        approximationParams[0] +
-        numericLambdas.reduce((sum, lambda, i) => {
-          return sum + approximationParams[i + 1] * math.exp(lambda * x);
-        }, 0)
-      );
+      if (approximationParams.type === 'linearized') {
+        return (
+          approximationParams.a0 +
+          approximationParams.a_i.reduce((sum, a, i) => sum + a * math.exp(numericLambdas[i] * x), 0) +
+          approximationParams.b_i.reduce((sum, b, i) => sum + b * x * math.exp(numericLambdas[i] * x), 0)
+        );
+      } else {
+        return (
+          approximationParams.a0 +
+          approximationParams.a_i.reduce((sum, a, i) => sum + a * math.exp(numericLambdas[i] * x), 0)
+        );
+      }
     });
 
     return (
@@ -297,12 +329,16 @@ function ExponentialApproximation({ data, lambdas, setLambdas }) {
                   label: 'Исходные данные',
                   data: yValues,
                   borderColor: 'blue',
+                  borderWidth: 0.5, 
+                  tension: 0,        
+                  pointRadius: 0.5, 
                   fill: false,
                 },
                 {
                   label: 'Аппроксимация',
                   data: approxYValues,
                   borderColor: 'red',
+                  borderWidth: 2,
                   fill: false,
                 },
               ],
@@ -318,14 +354,14 @@ function ExponentialApproximation({ data, lambdas, setLambdas }) {
   };
 
   const handleSelectedXColumnChange = (_, options) => {
-    setSelectedXColumnIndex(options.index)
-    setSelectedXColumnLabel(options.label)
-  }
+    setSelectedXColumnIndex(options.index);
+    setSelectedXColumnLabel(options.label);
+  };
 
   const handleSelectedYColumnChange = (_, options) => {
-    setSelectedYColumnIndex(options.index)
-    setSelectedYColumnLabel(options.label)
-  }
+    setSelectedYColumnIndex(options.index);
+    setSelectedYColumnLabel(options.label);
+  };
 
   return (
     <div className={s.exponentialApproximation}>
@@ -379,6 +415,15 @@ function ExponentialApproximation({ data, lambdas, setLambdas }) {
               className={s.lambda}
             />
             <Button onClick={handleAddLambda}>Добавить λ</Button>
+          </div>
+
+          <div className={s.modelSwitch}>
+            <Checkbox
+              checked={useLinearizedModel}
+              onChange={(e) => setUseLinearizedModel(e.target.checked)}
+            >
+              Использовать линеаризованную модель
+            </Checkbox>
           </div>
 
           <Button

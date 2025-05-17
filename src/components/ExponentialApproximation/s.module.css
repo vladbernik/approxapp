@@ -1,8 +1,47 @@
-.lambdaGroup {
+.container {
   display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.controls {
+  display: flex;
+  gap: 32px;
+}
+
+.xyParamsLabel {
+  margin-bottom: 12px!important;
+}
+
+.selection {
+  display: flex;
+  flex-direction: column;
   gap: 10px;
-  margin-bottom: 10px;
+  min-width: 200px;
+  position: sticky;
+  top: 0;
+}
+
+.selection {
+  position: -webkit-sticky; /* Для Safari */
+  position: sticky;
+  top: 0;
+}
+
+.lambdas {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.lambdaItem {
+  display: flex;
   align-items: center;
+  gap: 10px;
+}
+
+.lambdaInput {
+  width: 100px;
 }
 
 .lambdaControl {
@@ -11,54 +50,23 @@
   margin-top: 10px;
 }
 
-.selectContainer {
+.history {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  max-width: 180px;
+  gap: 10px;
+  overflow-y: auto;
 }
 
-.addLambdaInput {
-  max-width: 120px;
-}
-
-.lambda {
-  max-width: 120px;
-}
-
-.calculationInputs {
+.historyItems {
   display: flex;
-  justify-content: space-between;
+  gap: 15px;
 }
 
-.approximationsHistoryContainer {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  overflow: overlay;
-  margin-left: 40px;
-}
-
-.approximationsHistory {
-  display: flex;
-  flex-direction: row;
-  gap: 12px;
-}
-
-.approximationHistoryChart {
-  width: 400px;
-  height: 400px;
-}
-
-.parametersContainer {
-  margin-bottom: 16px;
-  padding: 12px;
-  background: #f5f5f5;
-  border-radius: 4px;
-}
-
-.historyCard {
-  margin-bottom: 16px;
+.historyItem, .currentCard {
+  background: white;
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .chartContainer {
@@ -66,60 +74,50 @@
   width: 200%;
 }
 
-.currentApproximation {
-  margin-top: 24px;
-  padding: 16px;
-  border: 1px solid #d9d9d9;
-  border-radius: 4px;
+.historyItem {
+  width: 300px;
 }
 
-.approximationHistoryItem {
-  margin-bottom: 24px;
-}
-
-.lambdaGroup {
-  display: flex;
-  align-items: center;
-  margin-bottom: 8px;
-}
-
-.lambda {
-  width: 120px;
-  margin: 0 8px;
-}
-
-.lambdaControl {
-  display: flex;
-  align-items: center;
-  margin-top: 8px;
-}
-
-.historyCard, .currentApproximation {
-  background: white;
-  padding: 16px;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  margin-bottom: 20px;
-}
-
-.chartContainer {
-  height: 400px;
-  width: 100%;
-  margin-top: 16px;
-}
-
-.parametersContainer {
+.parameters {
   background: #f8f9fa;
   padding: 12px;
   border-radius: 4px;
   margin-bottom: 16px;
 }
 
-.parametersContainer h4, .parametersContainer h5 {
+.currentParameters {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+.parameters h4, .parameters h5 {
   margin: 8px 0;
 }
 
-.parametersContainer ul {
+.parameters ul {
   margin: 4px 0;
-  padding-left: 20px;
+}
+
+.historyLabel {
+  margin-top: 44px !important;
+  margin-bottom: 12px!important;
+}
+
+.charts {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.historyChart {
+  height: 300px;
+}
+
+.currentChart {
+  height: 300px;
+  width: 100%;
+}
+
+.current {
 }

@@ -16,3 +16,9 @@
     background: #ffe4e4;
   }
 }
+
+.leftPull {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}

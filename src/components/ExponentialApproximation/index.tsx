@@ -142,7 +142,6 @@ export default function ExponentialApproximation({ data, lambdas, setLambdas }) 
 
   const renderParameters = (params, lambdas, xLabel, yLabel, isCurrent: boolean) => (
     <div className={cn(s.parameters, isCurrent && s.currentParameters)}>
-      <h4>Параметры расчета:</h4>
       <p>X: {xLabel}, Y: {yLabel}</p>
       <h5>Лямбды (λ):</h5>
       <ul>
@@ -188,7 +187,7 @@ export default function ExponentialApproximation({ data, lambdas, setLambdas }) 
     return (
       <div ref={cardRef} key={item.timestamp}>
         <Card
-          title={`Аппроксимация ${new Date(item.timestamp).toLocaleTimeString()}`}
+          title={new Date(item.timestamp).toLocaleTimeString()}
           className={s.historyItem}
           extra={
             <Button size="small" onClick={saveCardAsImage}>
@@ -240,7 +239,7 @@ export default function ExponentialApproximation({ data, lambdas, setLambdas }) 
     <div className={s.container}>
       <div className={s.controls}>
         <div className={s.selection}>
-          <h2>Значения для X и Y</h2>
+          <h2 className={s.xyParamsLabel}>Значения для X и Y</h2>
           <Select
             placeholder="Выберите X"
             value={selectedXColumn.label}

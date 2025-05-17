@@ -1,4 +1,4 @@
-import { DeleteOutlined } from '@ant-design/icons';
+import { DeleteOutlined, FileExcelOutlined } from '@ant-design/icons';
 import s from './s.module.css'
 
 interface UploadListProps {
@@ -7,5 +7,11 @@ interface UploadListProps {
 }
 
 export default function UploadList({ fileName, onDrop }: UploadListProps) {
-  return <div className={s.container} onClick={onDrop}>{fileName} <DeleteOutlined/></div>
+  return <div className={s.container} onClick={onDrop}>
+    <div className={s.leftPull}>
+      <FileExcelOutlined style={{ fontSize: 24 }} />
+      <span>{fileName}</span>
+    </div>
+    <DeleteOutlined style={{ fontSize: 24 }} />
+  </div>
 }

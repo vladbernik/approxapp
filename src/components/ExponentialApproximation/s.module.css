@@ -6,7 +6,11 @@
 
 .controls {
   display: flex;
-  gap: 20px;
+  gap: 32px;
+}
+
+.xyParamsLabel {
+  margin-bottom: 12px!important;
 }
 
 .selection {
@@ -91,7 +95,8 @@
 }
 
 .historyLabel {
-  margin-top: 24px !important;
+  margin-top: 44px !important;
+  margin-bottom: 12px!important;
 }
 
 .charts {
@@ -110,5 +115,4 @@
 }
 
 .current {
-  margin-top: 20px;
 }

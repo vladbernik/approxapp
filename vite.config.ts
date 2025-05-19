@@ -6,6 +6,7 @@ import * as path from 'path'
 // https://vitejs.dev/config/
 export default defineConfig({
     plugins: [react()],
+    base: '/approxapp/',
     resolve: {
         alias: [
             { find: '@/modules', replacement: path.resolve(__dirname, './src/modules') },

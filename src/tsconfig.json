@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ESNext",
+    "types": ["vite/client"],
+    "baseUrl": ".", // обязательно
+    "paths": {
+      "@/modules/*": ["src/modules/*"],
+      "@/pages/*": ["src/pages/*"],
+      "@/layouts/*": ["src/layouts/*"],
+      "@/components/*": ["src/components/*"],
+      "@/entities/*": ["src/entities/*"],
+      "@/locales/*": ["locales/*"]
+    }
+  },
+  "include": ["./src", "global.d.ts"] // Укажите ваш файл .d.ts
+}

@@ -1,0 +1,178 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.controls {
+  display: flex;
+  gap: 32px;
+  margin-top: 20px;
+}
+
+.xyParamsLabel {
+  margin-bottom: 12px !important;
+}
+
+.selection {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 200px;
+  position: sticky;
+  top: 20px;
+  height: 420px;
+}
+
+.lambdaItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.lambdaInput {
+  width: 100px;
+}
+
+.lambdaControl {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.history {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  overflow-y: auto;
+}
+
+.historyTitleContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  margin-top: 32px;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.swipe {
+  display: flex;
+  width: 200px;
+  justify-content: space-between;
+}
+
+.historyTitle {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.swipeContainer {
+  display: flex;
+  gap: 8px;
+  font-size: 16px;
+  color: gray;
+  font-weight: normal;
+}
+
+.historyItems {
+  display: flex;
+  gap: 15px;
+  overflow: overlay;
+  max-width: 100%;
+}
+
+.historyItemContainer {
+  width: 100%;
+  min-width: 100%;
+}
+
+.historyItem, .currentCard {
+  background: white;
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.errorInfo {
+  margin-bottom: 12px;
+  text-align: center;
+  font-weight: bold;
+}
+
+.chartContainer {
+  height: 500px;
+  width: 100%;
+}
+
+.historyItem {
+  width: 100%;
+}
+
+.parameters {
+  background: #f8f9fa;
+  padding: 12px;
+  border-radius: 4px;
+  margin-bottom: 16px;
+}
+
+.currentParameters {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+.parameters h4, .parameters h5 {
+  margin: 8px 0;
+}
+
+.historyLabel {
+  margin-top: 44px !important;
+  margin-bottom: 12px !important;
+}
+
+.charts {
+  display: flex;
+  flex-direction: column;
+  max-width: calc(100% - 264px - 32px);
+  width: 100%;
+}
+
+.historyChart {
+  height: 500px;
+  width: 100%;
+}
+
+.currentChart {
+  height: 500px;
+  width: 100%;
+}
+
+.xyParamsInChart {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.lambdasParamsLabel {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.paramsContainer {
+  display: flex;
+  gap: 20px;
+}
+
+.paramsCollapse {
+  background: transparent;
+  margin-bottom: 10px;
+}
+
+.historyNavigation {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 15px;
+}

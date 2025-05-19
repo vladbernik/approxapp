@@ -1,0 +1,21 @@
+.container {
+  max-width: 1240px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  padding: 20px 40px;
+  margin: auto;
+  order: 2;
+}
+
+.calculateInfo {
+  order: 2;
+  padding: 16px 0;
+}
+
+.selectContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-width: 180px;
+}

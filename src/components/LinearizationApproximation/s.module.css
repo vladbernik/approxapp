@@ -48,3 +48,9 @@
 .historyItem {
   width: 100%;
 }
+
+.rightPull {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}

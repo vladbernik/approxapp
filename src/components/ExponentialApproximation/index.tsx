@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import {useMemo} from 'react';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -10,18 +10,19 @@ import {
   Legend
 } from 'chart.js';
 import * as math from 'mathjs';
-import { message } from 'antd';
-import { LeftOutlined, RightOutlined } from '@ant-design/icons';
+import {message} from 'antd';
+import {LeftOutlined, RightOutlined} from '@ant-design/icons';
 import useExponentialApproximation from '../../hooks/useExponentialApproximation';
 import {
   ApproximationData,
   ApproximationParams,
   ExponentialApproximationProps
 } from '../../types/approximations';
-import { saveCardAsImage } from '../../utils';
+import {saveCardAsImage} from '../../utils';
 import DataAndParametersSelector from '../DataAndParametersSelector';
-import { useCalculationContext } from '../../contexts/CalculationContext';
+import {useCalculationContext} from '../../contexts/CalculationContext';
 import s from './s.module.css';
+import ResetStorageButton from "../ResetStorageButton";
 
 ChartJS.register(
   CategoryScale,
@@ -34,7 +35,7 @@ ChartJS.register(
 );
 
 // eslint-disable-next-line max-lines-per-function
-export default function ExponentialApproximation({ data }: ExponentialApproximationProps) {
+export default function ExponentialApproximation({data}: ExponentialApproximationProps) {
   const {
     selectedXColumn,
     setSelectedXColumn,
@@ -52,7 +53,7 @@ export default function ExponentialApproximation({ data }: ExponentialApproximat
     setCurrentApproximation,
     currentApproximation
   } = useCalculationContext()
-  const { HistoryItem, createChartData, renderCurrentApproximation } = useExponentialApproximation();
+  const {MemoizedHistoryItem, createChartData, renderCurrentApproximation} = useExponentialApproximation();
 
   const numericData = useMemo(() => {
     if (!data || selectedXColumn?.index === null || selectedYColumn?.index === null) {
@@ -66,6 +67,7 @@ export default function ExponentialApproximation({ data }: ExponentialApproximat
     });
   }, [data, selectedXColumn?.index, selectedYColumn?.index]);
 
+  console.log('f')
   const handleLambdaChange = (index: number, value: string) => {
     const newLambdas = [...lambdas];
     newLambdas[index] = value;
@@ -155,6 +157,19 @@ export default function ExponentialApproximation({ data }: ExponentialApproximat
     setHistoryIndex(0);
   };
 
+  const historyItems = useMemo(() => {
+    return history.map((item, index) => (
+      <div key={`exp-chart-${index}`} className={s.historyItemContainer}>
+        <MemoizedHistoryItem
+          key={item.timestamp}
+          item={item}
+          createChartData={createChartData}
+          onSave={saveCardAsImage}
+        />
+      </div>
+    ));
+  }, [history, createChartData]);
+
   return (
     <div className={s.container}>
       <div className={s.controls}>
@@ -179,25 +194,19 @@ export default function ExponentialApproximation({ data }: ExponentialApproximat
           {renderCurrentApproximation(currentApproximation)}
           {history.length > 0 && <div className={s.historyTitleContainer}>
               <span className={s.historyTitle}>История вычислений</span>
-            {history.length > 1 &&<div className={s.swipeContainer}>
-                  cвайп для просмотра
-                  <LeftOutlined/>
-                  <RightOutlined/>
-              </div>}
+              <div className={s.rightPull}>
+                  <ResetStorageButton/>
+                {history.length > 1 && <div className={s.swipeContainer}>
+                    cвайп для просмотра
+                    <LeftOutlined/>
+                    <RightOutlined/>
+                </div>}
+              </div>
           </div>
           }
 
           <div className={s.history}>
-            {history.map((item, index) => (
-              <div key={`exp-chart-${index}`} className={s.historyItemContainer}>
-                <HistoryItem
-                  key={item.timestamp}
-                  item={item}
-                  createChartData={createChartData}
-                  onSave={saveCardAsImage}
-                />
-              </div>
-            ))}
+            {historyItems}
           </div>
         </div>
       </div>

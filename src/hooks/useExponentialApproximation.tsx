@@ -2,7 +2,7 @@ import { Button, Card, Collapse, CollapseProps } from 'antd';
 import * as math from 'mathjs';
 import { DownloadOutlined, FileImageOutlined } from '@ant-design/icons';
 import { Line } from 'react-chartjs-2';
-import { FC, useRef } from 'react';
+import React, { FC, useRef } from 'react';
 import { ChartData } from 'chart.js';
 import Alert from 'antd/es/alert/Alert';
 import s from '../components/ExponentialApproximation/s.module.css';
@@ -63,32 +63,72 @@ const renderParameters = (
     </>
   );
 
-  const nonStandardParams = (isLinearized || Array.isArray(params)) && (
-    <>
-      {renderParametersBlock(
-        'Коэффициенты',
-        [
-          { label: 'a₀', value: Array.isArray(params) ? params[0]?.toFixed(6) : params.a0?.toFixed(6) || '0' },
-          ...(Array.isArray(params)
-            ? params.slice(1).map((a, i) => ({
-              label: `a_${i + 1}`,
-              value: a?.toFixed(8) || '0',
-            }))
-            : params.a_i?.map((a, i) => ({
+  // const nonStandardParams = (isLinearized || Array.isArray(params)) && (
+  //   <>
+  //     {renderParametersBlock(
+  //       'Коэффициенты',
+  //       [
+  //         { label: 'a₀', value: Array.isArray(params) ? params[0]?.toFixed(6) : params.a0?.toFixed(6) || '0' },
+  //         ...(Array.isArray(params)
+  //           ? params.slice(1).map((a, i) => ({
+  //             label: `a_${i + 1}`,
+  //             value: a?.toFixed(8) || '0',
+  //           }))
+  //           : params.a_i?.map((a, i) => ({
+  //           label: `a_${i + 1}`,
+  //           value: a?.toFixed(8) || '0',
+  //         })) || []),
+  //         ...(isLinearized
+  //           ? params.b_i?.map((b, i) => ({
+  //           label: `b_${i + 1}`,
+  //           value: b?.toFixed(8) || '0',
+  //         })) || []
+  //           : []),
+  //       ],
+  //       isHistory
+  //     )}
+  //   </>
+  // );
+ const nonStandardParams = (isLinearized || Array.isArray(params)) && (
+  <>
+    {renderParametersBlock(
+      'Коэффициенты',
+      [
+        { label: 'a₀', value: Array.isArray(params) ? params[0]?.toFixed(6) : params.a0?.toFixed(6) || '0' },
+        ...(Array.isArray(params)
+          ? params.slice(1).map((a, i) => ({
+            label: `a_${i + 1}`,
+            value: a?.toFixed(8) || '0',
+          }))
+          : params.a_i?.map((a, i) => ({
             label: `a_${i + 1}`,
             value: a?.toFixed(8) || '0',
           })) || []),
-          ...(isLinearized
-            ? params.b_i?.map((b, i) => ({
-            label: `b_${i + 1}`,
-            value: b?.toFixed(8) || '0',
-          })) || []
-            : []),
-        ],
-        isHistory
-      )}
-    </>
-  );
+        ...(isLinearized
+          ? [
+            ...params.b_i?.map((b, i) => ({
+              label: `b_${i + 1}`,
+              value: b?.toFixed(8) || '0',
+            })) || [],
+            // Добавляем новые λ, рассчитанные из b_i / a_i
+            ...params.a_i?.map((a, i) => {
+              if (a && params.b_i?.[i]) {
+                const sigma_i = params.b_i[i] / a;
+                const newLambda = (parseFloat(lambdas[i]) || 0) + sigma_i;
+                return {
+                  label: `λ_${i + 1} (уточнённая)`,
+                  value: newLambda.toFixed(8),
+                };
+              }
+              return null;
+            }).filter(Boolean) || []
+          ]
+          : []),
+      ],
+      isHistory
+    )}
+  </>
+);
 
   const xyParams = renderParametersBlock(
     'Параметры',
@@ -249,9 +289,10 @@ const renderCurrentApproximation = (currentApproximationData: ApproximationData 
 };
 
 export default function useExponentialApproximation() {
+  const MemoizedHistoryItem = React.memo(HistoryItem)
   return {
     renderParameters,
-    HistoryItem,
+    MemoizedHistoryItem,
     createChartData,
     renderCurrentApproximation,
   };

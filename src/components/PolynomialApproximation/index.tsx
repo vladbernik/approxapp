@@ -8,6 +8,7 @@ import DataAndParametersSelector from '../DataAndParametersSelector';
 import { useCalculationContext } from '../../contexts/CalculationContext';
 import StartText from '../StartText';
 import s from './s.module.css';
+import ResetStorageButton from "../ResetStorageButton";
 
 const { Panel } = Collapse;
 
@@ -19,9 +20,9 @@ function PolynomialApproximation({ data }) {
     setSelectedXColumn,
     setSelectedYColumn,
     setHistory,
+    polynomialHistory,
     degree,
     setDegree,
-    history,
     currentCoefficients,
     setCurrentCoefficients
   } = useCalculationContext();
@@ -168,19 +169,22 @@ function PolynomialApproximation({ data }) {
             </div>
           ): <StartText calculationGoal="polinomial" />}
 
-          {history.length > 0 && (
+          {polynomialHistory.length > 0 && (
             <div className={s.history}>
-              {history.length > 0 && <div className='historyTitleContainer'>
+              {polynomialHistory.length > 0 && <div className='historyTitleContainer'>
                   <span className='historyTitle'>История вычислений</span>
-                {history.length > 1 &&<div className='swipeContainer'>
-                    cвайп для просмотра
-                    <LeftOutlined/>
-                    <RightOutlined/>
-                </div>}
+                  <div className={s.rightPull}>
+                    {polynomialHistory.length > 1 &&<div className='swipeContainer'>
+                        cвайп для просмотра
+                        <LeftOutlined/>
+                        <RightOutlined/>
+                    </div>}
+                      <ResetStorageButton />
+                  </div>
               </div>
               }
               <div className={s.historyItems}>
-                {history.map((item, index) => (
+                {polynomialHistory.map((item, index) => (
                   <div key={index} className={s.historyItemContainer}>
                     <Card
                       className={s.historyCard}

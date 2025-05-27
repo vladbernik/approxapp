@@ -60,7 +60,6 @@ export const CalculationProvider: FC<{children: ReactNode}> = ({ children }) => 
   const [exponentialHistory, setExponentialHistory] = useState<ApproximationData[]>(savedExponentialHistory);
   const [linearizationHistory, setLinearizationHistory] = useState<ApproximationData[]>(savedLinearizationHistory);
 
-  console.log(linearizationHistory)
   const [historyIndex, setHistoryIndex] = useState(0);
 
   // Результаты вычислений
@@ -102,6 +101,7 @@ export const CalculationProvider: FC<{children: ReactNode}> = ({ children }) => 
     localStorage.setItem(STORAGE_KEYS.CURRENT_MODEL, currentModel);
   }, [currentModel]);
 
+  console.log(polynomialHistory)
   // Получение текущей истории в зависимости от модели
   const getCurrentHistory = (): ApproximationData[] => {
     switch (currentModel) {
@@ -111,6 +111,8 @@ export const CalculationProvider: FC<{children: ReactNode}> = ({ children }) => 
       default: return [];
     }
   };
+
+  console.log(linearizationHistory)
 
   // Установка истории для текущей модели
   const setCurrentHistory = (newHistory: ApproximationData[]) => {
@@ -172,6 +174,10 @@ export const CalculationProvider: FC<{children: ReactNode}> = ({ children }) => 
     }
   };
 
+  console.log(linearizationHistory)
+  console.log(exponentialHistory)
+  console.log(polynomialHistory)
+
   const value: CalculationContextType = {
     // Общее состояние
     currentModel,
@@ -181,11 +187,19 @@ export const CalculationProvider: FC<{children: ReactNode}> = ({ children }) => 
     setSelectedXColumn,
     selectedYColumn,
     setSelectedYColumn,
+
     history: getCurrentHistory(),
     setHistory: setCurrentHistory,
     addToHistory,
     historyIndex,
     setHistoryIndex,
+    setPolynomialHistory,
+    setExponentialHistory,
+    setLinearizationHistory,
+
+    polynomialHistory,
+    exponentialHistory,
+    linearizationHistory,
 
     // Результаты вычислений
     currentApproximation,
@@ -217,6 +231,10 @@ export const CalculationProvider: FC<{children: ReactNode}> = ({ children }) => 
     resetContext
   };
 
+  console.log(polynomialHistory)
+  console.log(exponentialHistory)
+  console.log(linearizationHistory
+  )
   return (
     <CalculationContext.Provider value={value}>
       {children}

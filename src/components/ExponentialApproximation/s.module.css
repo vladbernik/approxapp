@@ -176,3 +176,9 @@
   justify-content: center;
   margin-bottom: 15px;
 }
+
+.rightPull {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}

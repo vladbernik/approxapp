@@ -6,6 +6,7 @@ import DataAndParametersSelector from '../DataAndParametersSelector';
 import { useCalculationContext } from '../../contexts/CalculationContext';
 import StartText from '../StartText';
 import s from './s.module.css'
+import ResetStorageButton from "../ResetStorageButton";
 
 // eslint-disable-next-line max-lines-per-function
 function PolymerLinearization({ data }) {
@@ -21,7 +22,7 @@ function PolymerLinearization({ data }) {
     currentResult,
     currentChartData,
     setCurrentChartData,
-    history,
+    linearizationHistory,
     setHistory,
     setLinearizationParams,
   } = useCalculationContext()
@@ -164,7 +165,7 @@ function PolymerLinearization({ data }) {
   const renderResultDetails = (result, modelType, xLabel = '', yLabel = '') => {
     const items = [
       {
-        key: 'params',
+        key: modelType + params?.type,
         label: 'Параметры расчета',
         children: (
           <div>
@@ -202,7 +203,7 @@ function PolymerLinearization({ data }) {
   };
 
   console.log(currentResult)
-  console.log(history.length > 0)
+  console.log(history)
   return (
     <div className={s.container}>
       <span className={s.title}>Линеаризация моделей для фотополимеров</span>
@@ -257,17 +258,20 @@ function PolymerLinearization({ data }) {
             </Card> : <StartText calculationGoal="linearization"/>}
 
             <>
-              {history.length > 0 && <div className='historyTitleContainer'>
+              {linearizationHistory?.length > 0 && <div className='historyTitleContainer'>
                   <span className='historyTitle'>История вычислений</span>
-                {history.length > 1 && <div className='swipeContainer'>
-                    cвайп для просмотра
-                    <LeftOutlined/>
-                    <RightOutlined/>
-                </div>}
+                  <div className={s.rightPull}>
+                    {linearizationHistory?.length > 1 && <div className='swipeContainer'>
+                        cвайп для просмотра
+                        <LeftOutlined/>
+                        <RightOutlined/>
+                    </div>}
+                      <ResetStorageButton />
+                  </div>
               </div>
               }
               <div className={s.history}>
-                {history.map((item, index) => (
+                {linearizationHistory?.map((item, index) => (
                   <div className={s.historyItemContainer}>
                     <Card key={index} className={s.historyCard}>
                       {renderResultDetails(item, item.modelType, data[0][selectedXColumn.index],

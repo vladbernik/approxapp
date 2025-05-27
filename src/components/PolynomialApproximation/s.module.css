@@ -124,3 +124,9 @@
   width: 100%;
   min-width: 100%;
 }
+
+.rightPull {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}

@@ -17,6 +17,14 @@ export type CalculationContextType = {
   historyIndex: number;
   setHistoryIndex: (index: number) => void;
 
+  setPolynomialHistory: (history: ApproximationData[]) => void;
+  setExponentialHistory: (history: ApproximationData[]) => void;
+  setLinearizationHistory: (history: ApproximationData[]) => void;
+
+  polynomialHistory: ApproximationData[],
+  exponentialHistory: ApproximationData[],
+  linearizationHistory: ApproximationData[],
+
   // Результаты вычислений
   currentApproximation: ApproximationData | null;
   setCurrentApproximation: (data: ApproximationData | null) => void;

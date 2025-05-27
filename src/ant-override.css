@@ -10,3 +10,8 @@
 .ant-card .ant-card-body {
   padding: 8px !important;
 }
+
+.ant-alert-message {
+  display: flex !important;
+  justify-content: space-between !important;
+}

@@ -13,9 +13,6 @@ y(x) = c₀ + c₁·x + c₂·x² + ... + cₙ·xⁿ
 c₀, c₁, ..., cₙ — коэффициенты полинома (вычисляются методом наименьших квадратов),
 n — степень полинома (degree), задаётся пользователем.
 
-
-
-
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

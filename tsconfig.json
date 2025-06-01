@@ -12,9 +12,8 @@
     "allowImportingTsExtensions": true,
     "noEmit": true,
 
-
     "jsx": "react-jsx",
-    "allowUmdGlobalAccess": true,
+    "allowUmdGlobalAccess": true
   },
   "include": ["./src", "./src/types/global.d.ts"] // Укажите ваш файл .d.ts
 }

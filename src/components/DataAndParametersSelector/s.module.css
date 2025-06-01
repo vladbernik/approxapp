@@ -1,89 +1,89 @@
 .container {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    padding: 16px;
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    max-width: 264px;
-    height: fit-content;
-    position: sticky;
-    top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  max-width: 264px;
+  height: fit-content;
+  position: sticky;
+  top: 20px;
 }
 
 .title {
-    margin-bottom: 16px;
-    font-size: 18px;
-    font-weight: 500;
+  margin-bottom: 16px;
+  font-size: 18px;
+  font-weight: 500;
 }
 
 .selectContainer {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
 }
 
 .columnSelect {
-    width: 100%;
+  width: 100%;
 }
 
 .polynomialSettings {
-    margin-top: 16px;
+  margin-top: 16px;
 }
 
 .selectDegreeContainer {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin: 12px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 12px 0;
 }
 
 .degreeInput {
-    width: 100%;
+  width: 100%;
 }
 
 .lambdaItem {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
 }
 
 .lambdaInput {
-    flex: 1;
+  flex: 1;
 }
 
 .lambdaControl {
-    display: flex;
-    gap: 8px;
-    margin-top: 12px;
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
 }
 
 .modelSwitch {
-    margin: 16px 0;
+  margin: 16px 0;
 }
 
 .calculateButton {
-    width: 100%;
-    margin-top: 12px;
+  width: 100%;
+  margin-top: 12px;
 }
 
 .formRow {
-    margin-bottom: 16px;
+  margin-bottom: 16px;
 }
 
 .lambdas {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .paramInput {
-    width: 100%;
+  width: 100%;
 }
 
 .lambdaLabel {
-    font-size: 16px;
-    margin-bottom: 16px;
+  font-size: 16px;
+  margin-bottom: 16px;
 }

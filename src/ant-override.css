@@ -1,17 +1,17 @@
 .ant-upload {
-    width: 100% !important;
-    min-height: 280px;
+  width: 100% !important;
+  min-height: 280px;
 }
 
 .ant-upload-list-item {
-    display: none !important;
+  display: none !important;
 }
 
 .ant-card .ant-card-body {
-    padding: 8px !important;
+  padding: 8px !important;
 }
 
 .ant-alert-message {
-    display: flex !important;
-    justify-content: space-between !important;
+  display: flex !important;
+  justify-content: space-between !important;
 }

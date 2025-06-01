@@ -3,28 +3,26 @@ import { Line } from 'react-chartjs-2';
 import * as math from 'mathjs';
 import { Button, Card, Collapse, message } from 'antd';
 import { DownloadOutlined, LeftOutlined, RightOutlined } from '@ant-design/icons';
-import { saveCardAsImage } from '../../utils';
-import DataAndParametersSelector from '../DataAndParametersSelector';
-import { useCalculationContext } from '../../contexts/CalculationContext';
-import StartText from '../StartText';
 import s from './s.module.css';
-import ResetStorageButton from "../ResetStorageButton";
+import { useCalculationContext } from '@/contexts/CalculationContext';
+import { saveCardAsImage } from '@/utils';
+import { ResetStorageButton, StartText, DataAndParametersSelector } from '@/components';
 
 const { Panel } = Collapse;
 
-// eslint-disable-next-line max-lines-per-function
-function PolynomialApproximation({ data }) {
+// eslint-disable-next-line max-lines-per-function,react/prop-types
+export function PolynomialApproximation({ data }) {
   const {
     selectedXColumn,
     selectedYColumn,
     setSelectedXColumn,
     setSelectedYColumn,
-    setHistory,
+    setPolynomialHistory,
     polynomialHistory,
     degree,
     setDegree,
     currentCoefficients,
-    setCurrentCoefficients
+    setCurrentCoefficients,
   } = useCalculationContext();
 
   const cardRef = useRef<HTMLDivElement>(null);
@@ -48,15 +46,19 @@ function PolynomialApproximation({ data }) {
       const coefficients = solution.map((val) => val[0]);
       setCurrentCoefficients(coefficients);
 
-      setHistory(prev => [{
-        degree,
-        coefficients,
-        timestamp: new Date().toLocaleTimeString(),
-        xValues: [...xValues],
-        yValues: [...yValues],
-        xLabel: selectedXColumn.label,
-        yLabel: selectedYColumn.label
-      }, ...prev]);
+      // @ts-ignore
+      setPolynomialHistory((prev) => [
+        {
+          degree,
+          coefficients,
+          timestamp: new Date().toLocaleTimeString(),
+          xValues: [...xValues],
+          yValues: [...yValues],
+          xLabel: selectedXColumn.label,
+          yLabel: selectedYColumn.label,
+        },
+        ...prev,
+      ]);
     } catch (error) {
       console.error('Ошибка при вычислении полинома:', error);
       message.error('Ошибка при вычислении полинома.');
@@ -75,7 +77,7 @@ function PolynomialApproximation({ data }) {
     return (
       <Line
         data={{
-          labels: xValues.map(x => x.toFixed(4)),
+          labels: xValues.map((x) => x.toFixed(4)),
           datasets: [
             {
               label: 'Исходные данные',
@@ -122,7 +124,6 @@ function PolynomialApproximation({ data }) {
     </div>
   );
 
-  console.log(currentCoefficients)
   return (
     <div className={s.container}>
       <div className={s.controls}>
@@ -148,41 +149,52 @@ function PolynomialApproximation({ data }) {
                   <Button
                     size="small"
                     onClick={() => saveCardAsImage(cardRef, `approximation_${degree}`)}
-                    icon={<DownloadOutlined/>}
+                    icon={<DownloadOutlined />}
                   />
                 }
               >
                 <Collapse defaultActiveKey="params">
                   <Panel header="Параметры расчета" key="params">
-                    {renderCoefficients(currentCoefficients, selectedXColumn.label, selectedYColumn.label)}
+                    {renderCoefficients(
+                      currentCoefficients,
+                      selectedXColumn.label,
+                      selectedYColumn.label,
+                    )}
                   </Panel>
                 </Collapse>
                 <div className={s.chartWrapper} ref={cardRef}>
                   {renderPolynomialChart(
+                    // eslint-disable-next-line react/prop-types
                     data.slice(1).map((row) => row[selectedXColumn.index]),
+                    // eslint-disable-next-line react/prop-types
                     data.slice(1).map((row) => row[selectedYColumn.index]),
                     currentCoefficients,
-                    true
+                    true,
                   )}
                 </div>
               </Card>
             </div>
-          ): <StartText calculationGoal="polinomial" />}
+          ) : (
+            <StartText calculationGoal="polinomial" />
+          )}
 
           {polynomialHistory.length > 0 && (
             <div className={s.history}>
-              {polynomialHistory.length > 0 && <div className='historyTitleContainer'>
-                  <span className='historyTitle'>История вычислений</span>
+              {polynomialHistory.length > 0 && (
+                <div className="historyTitleContainer">
+                  <span className="historyTitle">История вычислений</span>
                   <div className={s.rightPull}>
-                    {polynomialHistory.length > 1 &&<div className='swipeContainer'>
+                    {polynomialHistory.length > 1 && (
+                      <div className="swipeContainer">
                         cвайп для просмотра
-                        <LeftOutlined/>
-                        <RightOutlined/>
-                    </div>}
-                      <ResetStorageButton />
+                        <LeftOutlined />
+                        <RightOutlined />
+                      </div>
+                    )}
+                    <ResetStorageButton />
                   </div>
-              </div>
-              }
+                </div>
+              )}
               <div className={s.historyItems}>
                 {polynomialHistory.map((item, index) => (
                   <div key={index} className={s.historyItemContainer}>
@@ -193,7 +205,7 @@ function PolynomialApproximation({ data }) {
                         <Button
                           size="small"
                           onClick={() => saveCardAsImage(cardRef, `history_${item.timestamp}`)}
-                          icon={<DownloadOutlined/>}
+                          icon={<DownloadOutlined />}
                         />
                       }
                     >
@@ -216,5 +228,3 @@ function PolynomialApproximation({ data }) {
     </div>
   );
 }
-
-export default PolynomialApproximation;

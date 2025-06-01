@@ -21,9 +21,9 @@ export type CalculationContextType = {
   setExponentialHistory: (history: ApproximationData[]) => void;
   setLinearizationHistory: (history: ApproximationData[]) => void;
 
-  polynomialHistory: ApproximationData[],
-  exponentialHistory: ApproximationData[],
-  linearizationHistory: ApproximationData[],
+  polynomialHistory: ApproximationData[];
+  exponentialHistory: ApproximationData[];
+  linearizationHistory: ApproximationData[];
 
   // Результаты вычислений
   currentApproximation: ApproximationData | null;
@@ -53,5 +53,5 @@ export type CalculationContextType = {
   linearizationParams: ApproximationParams;
   setLinearizationParams: (params: ApproximationParams) => void;
 
-  resetContext: () => void
+  resetContext: () => void;
 };

@@ -1,44 +1,41 @@
-import { createContext, useState, useContext, FC, ReactNode, useEffect } from 'react';
+import { createContext, FC, ReactNode, useContext, useEffect, useState } from 'react';
 import { ApproximationData, ApproximationParams, ColumnSelection } from '../types/approximations';
-import {
-  ApproximationModel,
-  CalculationContextType,
-  LinearizationModelType
-} from './types';
+import { ApproximationModel, CalculationContextType, LinearizationModelType } from './types';
 
 const CalculationContext = createContext<CalculationContextType | undefined>(undefined);
 
-// Ключи для localStorage для каждой модели
 const STORAGE_KEYS = {
   POLYNOMIAL_HISTORY: 'polynomial_approximation_history',
   EXPONENTIAL_HISTORY: 'exponential_approximation_history',
   LINEARIZATION_HISTORY: 'linearization_approximation_history',
-  CURRENT_MODEL: 'current_approximation_model'
+  CURRENT_MODEL: 'current_approximation_model',
 };
 
-// eslint-disable-next-line react/function-component-definition
-export const CalculationProvider: FC<{children: ReactNode}> = ({ children }) => {
-  // Загрузка начального состояния из localStorage
+// eslint-disable-next-line react/function-component-definition,max-lines-per-function
+export const CalculationProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const loadFromLocalStorage = (): {
-    polynomialHistory: ApproximationData[],
-    exponentialHistory: ApproximationData[],
-    linearizationHistory: ApproximationData[],
-    currentModel: ApproximationModel
+    polynomialHistory: ApproximationData[];
+    exponentialHistory: ApproximationData[];
+    linearizationHistory: ApproximationData[];
+    currentModel: ApproximationModel;
   } => {
     try {
       return {
         polynomialHistory: JSON.parse(localStorage.getItem(STORAGE_KEYS.POLYNOMIAL_HISTORY)) || [],
-          exponentialHistory: JSON.parse(localStorage.getItem(STORAGE_KEYS.EXPONENTIAL_HISTORY)) || [],
-        linearizationHistory: JSON.parse(localStorage.getItem(STORAGE_KEYS.LINEARIZATION_HISTORY)) || [],
-        currentModel: (localStorage.getItem(STORAGE_KEYS.CURRENT_MODEL) as ApproximationModel || 'polynomial'
-        ) }
+        exponentialHistory:
+          JSON.parse(localStorage.getItem(STORAGE_KEYS.EXPONENTIAL_HISTORY)) || [],
+        linearizationHistory:
+          JSON.parse(localStorage.getItem(STORAGE_KEYS.LINEARIZATION_HISTORY)) || [],
+        currentModel:
+          (localStorage.getItem(STORAGE_KEYS.CURRENT_MODEL) as ApproximationModel) || 'polynomial',
+      };
     } catch (error) {
       console.error('Failed to parse saved data', error);
       return {
         polynomialHistory: [],
         exponentialHistory: [],
         linearizationHistory: [],
-        currentModel: 'polynomial'
+        currentModel: 'polynomial',
       };
     }
   };
@@ -47,18 +44,27 @@ export const CalculationProvider: FC<{children: ReactNode}> = ({ children }) => 
     polynomialHistory: savedPolynomialHistory,
     exponentialHistory: savedExponentialHistory,
     linearizationHistory: savedLinearizationHistory,
-    currentModel: savedModel
+    currentModel: savedModel,
   } = loadFromLocalStorage();
 
   // Общее состояние
   const [currentModel, setCurrentModel] = useState<ApproximationModel>(savedModel);
-  const [selectedXColumn, setSelectedXColumn] = useState<ColumnSelection>({ index: null, label: '' });
-  const [selectedYColumn, setSelectedYColumn] = useState<ColumnSelection>({ index: null, label: '' });
+  const [selectedXColumn, setSelectedXColumn] = useState<ColumnSelection>({
+    index: null,
+    label: '',
+  });
+  const [selectedYColumn, setSelectedYColumn] = useState<ColumnSelection>({
+    index: null,
+    label: '',
+  });
 
   // Отдельные истории для каждой модели
-  const [polynomialHistory, setPolynomialHistory] = useState<ApproximationData[]>(savedPolynomialHistory);
-  const [exponentialHistory, setExponentialHistory] = useState<ApproximationData[]>(savedExponentialHistory);
-  const [linearizationHistory, setLinearizationHistory] = useState<ApproximationData[]>(savedLinearizationHistory);
+  const [polynomialHistory, setPolynomialHistory] =
+    useState<ApproximationData[]>(savedPolynomialHistory);
+  const [exponentialHistory, setExponentialHistory] =
+    useState<ApproximationData[]>(savedExponentialHistory);
+  const [linearizationHistory, setLinearizationHistory] =
+    useState<ApproximationData[]>(savedLinearizationHistory);
 
   const [historyIndex, setHistoryIndex] = useState(0);
 
@@ -77,10 +83,11 @@ export const CalculationProvider: FC<{children: ReactNode}> = ({ children }) => 
   const [useLinearizedModel, setUseLinearizedModel] = useState(false);
 
   // Линеаризация
-  const [linearizationModelType, setLinearizationModelType] = useState<LinearizationModelType>('maxwell');
+  const [linearizationModelType, setLinearizationModelType] =
+    useState<LinearizationModelType>('maxwell');
   const [linearizationParams, setLinearizationParams] = useState<ApproximationParams>({
     E: null,
-    epsilon: null
+    epsilon: null,
   });
 
   // Сохранение историй в localStorage при изменении
@@ -101,31 +108,16 @@ export const CalculationProvider: FC<{children: ReactNode}> = ({ children }) => 
     localStorage.setItem(STORAGE_KEYS.CURRENT_MODEL, currentModel);
   }, [currentModel]);
 
-  console.log(polynomialHistory)
-  // Получение текущей истории в зависимости от модели
   const getCurrentHistory = (): ApproximationData[] => {
     switch (currentModel) {
-      case 'polynomial': return polynomialHistory;
-      case 'exponential': return exponentialHistory;
-      case 'linearization': return linearizationHistory;
-      default: return [];
-    }
-  };
-
-  console.log(linearizationHistory)
-
-  // Установка истории для текущей модели
-  const setCurrentHistory = (newHistory: ApproximationData[]) => {
-    switch (currentModel) {
       case 'polynomial':
-        setPolynomialHistory(newHistory);
-        break;
+        return polynomialHistory;
       case 'exponential':
-        setExponentialHistory(newHistory);
-        break;
+        return exponentialHistory;
       case 'linearization':
-        setLinearizationHistory(newHistory);
-        break;
+        return linearizationHistory;
+      default:
+        return [];
     }
   };
 
@@ -149,7 +141,7 @@ export const CalculationProvider: FC<{children: ReactNode}> = ({ children }) => 
     setLinearizationModelType('maxwell');
     setLinearizationParams({
       E: null,
-      epsilon: null
+      epsilon: null,
     });
   }
 
@@ -159,7 +151,7 @@ export const CalculationProvider: FC<{children: ReactNode}> = ({ children }) => 
   };
 
   const addToHistory = (data: ApproximationData) => {
-    const newHistory = [data, ...getCurrentHistory()].slice(0, 10); // Ограничиваем историю 10 последними записями
+    const newHistory = [data, ...getCurrentHistory()].slice(0, 10); // 10 последних записей
 
     switch (currentModel) {
       case 'polynomial':
@@ -174,12 +166,7 @@ export const CalculationProvider: FC<{children: ReactNode}> = ({ children }) => 
     }
   };
 
-  console.log(linearizationHistory)
-  console.log(exponentialHistory)
-  console.log(polynomialHistory)
-
   const value: CalculationContextType = {
-    // Общее состояние
     currentModel,
     setCurrentModel,
     handleChangeModel,
@@ -189,7 +176,6 @@ export const CalculationProvider: FC<{children: ReactNode}> = ({ children }) => 
     setSelectedYColumn,
 
     history: getCurrentHistory(),
-    setHistory: setCurrentHistory,
     addToHistory,
     historyIndex,
     setHistoryIndex,
@@ -201,7 +187,6 @@ export const CalculationProvider: FC<{children: ReactNode}> = ({ children }) => 
     exponentialHistory,
     linearizationHistory,
 
-    // Результаты вычислений
     currentApproximation,
     setCurrentApproximation,
     currentCoefficients,
@@ -211,11 +196,9 @@ export const CalculationProvider: FC<{children: ReactNode}> = ({ children }) => 
     currentResult,
     setCurrentResult,
 
-    // Полиномиальная аппроксимация
     degree,
     setDegree,
 
-    // Экспоненциальная аппроксимация
     inputLambda,
     setInputLambda,
     lambdas,
@@ -223,23 +206,14 @@ export const CalculationProvider: FC<{children: ReactNode}> = ({ children }) => 
     useLinearizedModel,
     setUseLinearizedModel,
 
-    // Линеаризация
     linearizationModelType,
     setLinearizationModelType,
     linearizationParams,
     setLinearizationParams,
-    resetContext
+    resetContext,
   };
 
-  console.log(polynomialHistory)
-  console.log(exponentialHistory)
-  console.log(linearizationHistory
-  )
-  return (
-    <CalculationContext.Provider value={value}>
-      {children}
-    </CalculationContext.Provider>
-  );
+  return <CalculationContext.Provider value={value}>{children}</CalculationContext.Provider>;
 };
 
 export const useCalculationContext = () => {

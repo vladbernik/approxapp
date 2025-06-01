@@ -1,12 +1,12 @@
 import { useState } from 'react';
 
-function DataDivider({ columns, data, onDivide }) {
+export function DataDivider({ columns, data, onDivide }) {
   const [selectedColumns, setSelectedColumns] = useState([]);
   const [selectedCells, setSelectedCells] = useState([]);
 
   const handleColumnToggle = (column) => {
     if (selectedColumns.includes(column)) {
-      setSelectedColumns(selectedColumns.filter(col => col !== column));
+      setSelectedColumns(selectedColumns.filter((col) => col !== column));
     } else {
       setSelectedColumns([...selectedColumns, column]);
     }
@@ -15,16 +15,16 @@ function DataDivider({ columns, data, onDivide }) {
   const handleCellToggle = (rowIndex, cellIndex) => {
     const cell = `${rowIndex}-${cellIndex}`;
     if (selectedCells.includes(cell)) {
-      setSelectedCells(selectedCells.filter(selectedCell => selectedCell !== cell));
+      setSelectedCells(selectedCells.filter((selectedCell) => selectedCell !== cell));
     } else {
       setSelectedCells([...selectedCells, cell]);
     }
   };
 
   const handleDivide = () => {
-    const dividedData = data.map(row => {
+    const dividedData = data.map((row) => {
       const newRow = [];
-      selectedColumns.forEach(colIndex => {
+      selectedColumns.forEach((colIndex) => {
         newRow.push(row[colIndex]);
       });
       return newRow;
@@ -53,7 +53,9 @@ function DataDivider({ columns, data, onDivide }) {
               key={cellIndex}
               style={{
                 marginRight: '5px',
-                backgroundColor: selectedCells.includes(`${rowIndex}-${cellIndex}`) ? 'lightblue' : 'transparent'
+                backgroundColor: selectedCells.includes(`${rowIndex}-${cellIndex}`)
+                  ? 'lightblue'
+                  : 'transparent',
               }}
               onClick={() => handleCellToggle(rowIndex, cellIndex)}
             >
@@ -66,5 +68,3 @@ function DataDivider({ columns, data, onDivide }) {
     </div>
   );
 }
-
-export default DataDivider;

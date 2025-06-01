@@ -9,7 +9,7 @@ export interface ApproximationParams {
   a0: number;
   a_i: number[];
   b_i?: number[];
-  E?: number
+  E?: number;
 }
 
 export interface ColumnSelection {

@@ -1,41 +1,32 @@
-import {useMemo} from 'react';
+import { useMemo } from 'react';
 import {
-  Chart as ChartJS,
   CategoryScale,
+  Chart as ChartJS,
+  Legend,
   LinearScale,
-  PointElement,
   LineElement,
+  PointElement,
   Title,
   Tooltip,
-  Legend
 } from 'chart.js';
 import * as math from 'mathjs';
-import {message} from 'antd';
-import {LeftOutlined, RightOutlined} from '@ant-design/icons';
-import useExponentialApproximation from '../../hooks/useExponentialApproximation';
+import { message } from 'antd';
+import { LeftOutlined, RightOutlined } from '@ant-design/icons';
+import useExponentialApproximation from '../../hooks/useExponentialApproximation.js';
+import s from './s.module.css';
+import { saveCardAsImage } from '@/utils/index.js';
+import { useCalculationContext } from '@/contexts/CalculationContext.js';
 import {
   ApproximationData,
   ApproximationParams,
-  ExponentialApproximationProps
-} from '../../types/approximations';
-import {saveCardAsImage} from '../../utils';
-import DataAndParametersSelector from '../DataAndParametersSelector';
-import {useCalculationContext} from '../../contexts/CalculationContext';
-import s from './s.module.css';
-import ResetStorageButton from "../ResetStorageButton";
+  ExponentialApproximationProps,
+} from '@/types/approximations.js';
+import { DataAndParametersSelector, ResetStorageButton } from '@/components';
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend
-);
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
 // eslint-disable-next-line max-lines-per-function
-export default function ExponentialApproximation({data}: ExponentialApproximationProps) {
+export function ExponentialApproximation({ data }: ExponentialApproximationProps) {
   const {
     selectedXColumn,
     setSelectedXColumn,
@@ -49,11 +40,13 @@ export default function ExponentialApproximation({data}: ExponentialApproximatio
     setUseLinearizedModel,
     history,
     setHistory,
+    setExponentialHistory,
     setHistoryIndex,
     setCurrentApproximation,
-    currentApproximation
-  } = useCalculationContext()
-  const {MemoizedHistoryItem, createChartData, renderCurrentApproximation} = useExponentialApproximation();
+    currentApproximation,
+  } = useCalculationContext();
+  const { MemoizedHistoryItem, createChartData, renderCurrentApproximation } =
+    useExponentialApproximation();
 
   const numericData = useMemo(() => {
     if (!data || selectedXColumn?.index === null || selectedYColumn?.index === null) {
@@ -67,7 +60,6 @@ export default function ExponentialApproximation({data}: ExponentialApproximatio
     });
   }, [data, selectedXColumn?.index, selectedYColumn?.index]);
 
-  console.log('f')
   const handleLambdaChange = (index: number, value: string) => {
     const newLambdas = [...lambdas];
     newLambdas[index] = value;
@@ -97,7 +89,7 @@ export default function ExponentialApproximation({data}: ExponentialApproximatio
       return;
     }
 
-    const numericLambdas = lambdas.map(lambda => parseFloat(lambda) || 0);
+    const numericLambdas = lambdas.map((lambda) => parseFloat(lambda) || 0);
     const xValues = numericData.map((row: any) => parseFloat(row[selectedXColumn.index as number]));
     const yValues = numericData.map((row: any) => parseFloat(row[selectedYColumn.index as number]));
 
@@ -149,11 +141,11 @@ export default function ExponentialApproximation({data}: ExponentialApproximatio
       xValues: [...xValues],
       yValues: [...yValues],
       useLinearizedModel,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     };
 
     setCurrentApproximation(newApproximation);
-    setHistory(prev => [newApproximation, ...prev]);
+    setExponentialHistory((prev) => [newApproximation, ...prev]);
     setHistoryIndex(0);
   };
 
@@ -192,22 +184,23 @@ export default function ExponentialApproximation({data}: ExponentialApproximatio
         />
         <div className={s.charts}>
           {renderCurrentApproximation(currentApproximation)}
-          {history.length > 0 && <div className={s.historyTitleContainer}>
+          {history.length > 0 && (
+            <div className={s.historyTitleContainer}>
               <span className={s.historyTitle}>История вычислений</span>
               <div className={s.rightPull}>
-                  <ResetStorageButton/>
-                {history.length > 1 && <div className={s.swipeContainer}>
+                <ResetStorageButton />
+                {history.length > 1 && (
+                  <div className={s.swipeContainer}>
                     cвайп для просмотра
-                    <LeftOutlined/>
-                    <RightOutlined/>
-                </div>}
+                    <LeftOutlined />
+                    <RightOutlined />
+                  </div>
+                )}
               </div>
-          </div>
-          }
+            </div>
+          )}
 
-          <div className={s.history}>
-            {historyItems}
-          </div>
+          <div className={s.history}>{historyItems}</div>
         </div>
       </div>
     </div>

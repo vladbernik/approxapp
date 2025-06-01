@@ -1,9 +1,8 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import s from './App.module.css';
-import Header from './components/Header';
 import Dashboard from './pages/Dashboard';
 import About from './pages/About';
-import ParticlesContainer from './components/ParticlesContainer';
+import { Header, ParticlesContainer } from '@/components';
 
 function App() {
   return (

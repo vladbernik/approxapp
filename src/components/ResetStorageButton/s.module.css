@@ -1,14 +1,14 @@
 .leftPull {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
 
 .deleteButton {
-  font-size: 24px;
-  transition: .3s ease-in-out;
+    font-size: 24px;
+    transition: .3s ease-in-out;
 
-  &:hover {
-    color: red;
-  }
+    &:hover {
+        color: red;
+    }
 }

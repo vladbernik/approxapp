@@ -3,23 +3,24 @@ import * as XLSX from 'xlsx';
 import { Button, Table, Upload, UploadFile, UploadProps } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { createPortal } from 'react-dom';
-import UploadList from '../UploadList';
-import { useCalculationContext } from '../../contexts/CalculationContext';
-import s from './s.module.css'
+import s from './s.module.css';
+import { UploadList } from '@/components';
+import { useCalculationContext } from '@/contexts/CalculationContext.tsx';
 
 interface ExcelReaderProps {
-  handleExcelData: any
-  approxType: string | null
-  data: any | null
-  setData: (data: any) => void
+  handleExcelData: any;
+  approxType: string | null;
+  data: any | null;
+  setData: (data: any) => void;
 }
 
 const { Dragger } = Upload;
 
-function ExcelReaderWithTable({ handleExcelData, setData, data }: ExcelReaderProps) {
+// eslint-disable-next-line complexity,max-lines-per-function
+export function ExcelReaderWithTable({ handleExcelData, setData, data }: ExcelReaderProps) {
   const [displayedRows, setDisplayedRows] = useState(25);
   const [showTable, setShowTable] = useState(true);
-  const { resetContext, setCurrentModel } = useCalculationContext()
+  const { resetContext, setCurrentModel } = useCalculationContext();
   const [fileList, setFileList] = useState<UploadFile[]>([]);
 
   const getColumns = (headers: any[]) =>
@@ -46,7 +47,6 @@ function ExcelReaderWithTable({ handleExcelData, setData, data }: ExcelReaderPro
       let newFileList = [...info.fileList];
 
       newFileList = newFileList.slice(-1);
-      console.log(fileList)
       setFileList(newFileList);
 
       const file = info.file.originFileObj;
@@ -66,8 +66,8 @@ function ExcelReaderWithTable({ handleExcelData, setData, data }: ExcelReaderPro
     },
     onRemove() {
       setFileList([]);
-      setCurrentModel('polynomial')
-      resetContext()
+      setCurrentModel('polynomial');
+      resetContext();
       setData(null);
       return true;
     },
@@ -75,21 +75,22 @@ function ExcelReaderWithTable({ handleExcelData, setData, data }: ExcelReaderPro
   };
 
   const drop = () => {
-    setData(null)
-    setFileList([])
-    resetContext()
-    setCurrentModel('polynomial')
-  }
+    setData(null);
+    setFileList([]);
+    resetContext();
+    setCurrentModel('polynomial');
+  };
 
   return (
     <div className={s.tableContainer}>
-      {fileList.length > 0 && createPortal(
-        <UploadList fileName={fileList[0]?.name} onDrop={drop}/>,
-        document.getElementById('appBody')
-      )}
+      {fileList.length > 0 &&
+        createPortal(
+          <UploadList fileName={fileList[0]?.name} onDrop={drop} />,
+          document.getElementById('appBody'),
+        )}
       <Dragger {...props} className={data !== null && s.hideDragger}>
         <p className="ant-upload-drag-icon">
-          <PlusOutlined/>
+          <PlusOutlined />
         </p>
         <p className="ant-upload-text">Кликните или перетащите файл в эту область</p>
         <p className="ant-upload-hint">Поддерживаются файлы формата .xls, .xlsx, .csv</p>
@@ -114,16 +115,18 @@ function ExcelReaderWithTable({ handleExcelData, setData, data }: ExcelReaderPro
             />
           )}
 
-          {data.length > displayedRows && showTable && <div className={s.showMoreBtnContainer}>
-              <Button className={s.showMoreBtn} onClick={() => setDisplayedRows(displayedRows + 25)}>
-                  Показать больше строк
+          {data.length > displayedRows && showTable && (
+            <div className={s.showMoreBtnContainer}>
+              <Button
+                className={s.showMoreBtn}
+                onClick={() => setDisplayedRows(displayedRows + 25)}
+              >
+                Показать больше строк
               </Button>
-          </div>
-          }
+            </div>
+          )}
         </>
       )}
     </div>
   );
 }
-
-export default ExcelReaderWithTable;

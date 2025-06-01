@@ -1,20 +1,22 @@
 import { Select } from 'antd';
-import { useCalculationContext } from '../../contexts/CalculationContext';
-import s from './s.module.css'
+import s from './s.module.css';
+import { useCalculationContext } from '@/contexts/CalculationContext.tsx';
 
-export default function ApproximationSelector() {
-  const { handleChangeModel, currentModel } = useCalculationContext()
-  return <div className={s.container}>
-    <span className={s.title}>Модель</span>
-    <Select
-    placeholder="Тип аппроксимации"
-    onChange={handleChangeModel}
-    value={currentModel}
-    options={[
-      { value: 'polynomial', label: 'Полиномиальная' },
-      { value: 'exponential', label: 'Экспоненциальная' },
-      { value: 'linearization', label: 'Линеаризация' },
-    ]}
-  />
-  </div>
+export function ApproximationSelector() {
+  const { handleChangeModel, currentModel } = useCalculationContext();
+  return (
+    <div className={s.container}>
+      <span className={s.title}>Модель</span>
+      <Select
+        placeholder="Тип аппроксимации"
+        onChange={handleChangeModel}
+        value={currentModel}
+        options={[
+          { value: 'polynomial', label: 'Полиномиальная' },
+          { value: 'exponential', label: 'Экспоненциальная' },
+          { value: 'linearization', label: 'Линеаризация' },
+        ]}
+      />
+    </div>
+  );
 }

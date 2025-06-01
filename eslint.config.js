@@ -12,11 +12,11 @@ export default tseslint.config({
         "@typescript-eslint": tseslint.plugin, import: pluginImport, react: pluginReact, prettier: pluginPrettier
     },
     rules: {
-        quotes: ['error', 'single', { avoidEscape: true }],
+        quotes: ['error', 'single', {avoidEscape: true}],
         'no-empty-pattern': 0,
         'linebreak-style': ['error', 'unix'],
         'no-trailing-spaces': 'error',
-        'max-lines-per-function': ['error', { max: 90, skipBlankLines: true, skipComments: true }],
+        'max-lines-per-function': ['error', {max: 90, skipBlankLines: true, skipComments: true}],
         complexity: ['error', 9],
         'no-constant-condition': [
             'error',
@@ -70,7 +70,7 @@ export default tseslint.config({
                 argsIgnorePattern: '^_',
             },
         ],
-        '@typescript-eslint/no-use-before-define': ['error', { functions: false, variables: true }],
+        '@typescript-eslint/no-use-before-define': ['error', {functions: false, variables: true}],
         eqeqeq: ['error', 'smart'],
         'no-nested-ternary': 'error',
         'react/react-in-jsx-scope': 0,
@@ -88,5 +88,6 @@ export default tseslint.config({
         ],
         'react/jsx-curly-brace-presence': 'error',
         'react/self-closing-comp': 'error',
+        'prettier/prettier': 'error',
     },
 });

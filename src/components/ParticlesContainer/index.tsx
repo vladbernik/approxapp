@@ -1,16 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
 import Particles, { initParticlesEngine } from '@tsparticles/react';
-import {
-  type Container,
-  type ISourceOptions,
-  MoveDirection,
-  OutMode,
-} from '@tsparticles/engine';
+import { type ISourceOptions, MoveDirection, OutMode } from '@tsparticles/engine';
 import { loadSlim } from '@tsparticles/slim';
-import s from './s.module.css'
+import s from './s.module.css';
 
-// eslint-disable-next-line max-lines-per-function
-export default function ParticlesContainer() {
+export function ParticlesContainer() {
   const [init, setInit] = useState(false);
   useEffect(() => {
     initParticlesEngine(async (engine) => {
@@ -19,10 +13,6 @@ export default function ParticlesContainer() {
       setInit(true);
     });
   }, []);
-
-  const particlesLoaded = async (container?: Container): Promise<void> => {
-    console.log(container);
-  };
 
   const options: ISourceOptions = useMemo(
     () => ({
@@ -98,11 +88,7 @@ export default function ParticlesContainer() {
   if (init) {
     return (
       <div className={s.container}>
-        <Particles
-          id="tsparticles"
-          particlesLoaded={particlesLoaded}
-          options={options}
-        />
+        <Particles id="tsparticles" options={options} />
       </div>
     );
   }

@@ -1,49 +1,49 @@
 .e.excel-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
 }
 
 .excel-table th, .excel-table td {
-  border: 1px solid #ddd;
-  padding: 8px;
+    border: 1px solid #ddd;
+    padding: 8px;
 }
 
 .excel-table th {
-  background-color: #4b0082; /* Цвет шапки приложения */
-  color: white;
-  cursor: pointer;
+    background-color: #4b0082; /* Цвет шапки приложения */
+    color: white;
+    cursor: pointer;
 }
 
 .excel-table th .selected-a {
-  background-color: rgb(202, 78, 240);
-  margin-bottom: 3px;
+    background-color: rgb(202, 78, 240);
+    margin-bottom: 3px;
 }
 
 .excel-table th .selected-b {
-  background-color: rgb(220, 139, 223);
+    background-color: rgb(220, 139, 223);
 }
 
 .custom-file-upload {
-  margin-top: 10px;
-  background-color: #4b0082;
-  color: #ffffff;
-  padding: 8px 16px;
-  border: none;
-  cursor: pointer;
-  border-radius: 4px;
-  margin-right: 5px;
+    margin-top: 10px;
+    background-color: #4b0082;
+    color: #ffffff;
+    padding: 8px 16px;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+    margin-right: 5px;
 }
 
 .custom-file-upload:hover {
-  background-color: #ac48eb;
+    background-color: #ac48eb;
 }
 
 .machine-params {
-  margin-top: 10px;
+    margin-top: 10px;
 }
 
 .machine-params label {
-  display: block;
-  margin: 5px 0;
+    display: block;
+    margin: 5px 0;
 }

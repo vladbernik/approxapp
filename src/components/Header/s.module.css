@@ -1,27 +1,27 @@
 .container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  order: 0;
-  backdrop-filter: blur(4px);
-  padding: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    order: 0;
+    backdrop-filter: blur(4px);
+    padding: 30px;
 }
 
 .logo {
-  max-width: 48px;
-  max-height: 48px;
-  border-radius: 6px;
-  border: 1px solid #124149;
-  cursor: pointer;
+    max-width: 48px;
+    max-height: 48px;
+    border-radius: 6px;
+    border: 1px solid #124149;
+    cursor: pointer;
 }
 
 .projName {
-  font-family: "Archivo Black", sans-serif;
-  cursor: pointer;
+    font-family: "Archivo Black", sans-serif;
+    cursor: pointer;
 }
 
 .aboutLink {
-  cursor: pointer;
-  font-size: 16px;
-  font-family: "Montserrat", sans-serif;
+    cursor: pointer;
+    font-size: 16px;
+    font-family: "Montserrat", sans-serif;
 }

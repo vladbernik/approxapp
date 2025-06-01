@@ -1,26 +1,27 @@
 .tableContainer {
-  order: 2;
+    order: 2;
 }
+
 .upload {
-  width: 100%;
-  margin: 12px 0;
+    width: 100%;
+    margin: 12px 0;
 }
 
 .tableControls {
-  display: flex;
-  align-content: center;
-  justify-content: space-between;
-  margin-top: 16px;
-  gap: 16px;
+    display: flex;
+    align-content: center;
+    justify-content: space-between;
+    margin-top: 16px;
+    gap: 16px;
 }
 
 .showMoreBtnContainer {
-  display: flex;
-  justify-content: center;
-  margin-top: 24px;
-  margin-bottom: 16px;
+    display: flex;
+    justify-content: center;
+    margin-top: 24px;
+    margin-bottom: 16px;
 }
 
 .hideDragger > div:first-child {
-  display: none !important;
+    display: none !important;
 }

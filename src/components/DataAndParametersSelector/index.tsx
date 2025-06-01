@@ -1,8 +1,8 @@
-import { Button, Input, Select, Checkbox, Form, Row, Col, InputNumber } from 'antd';
+import { Button, Checkbox, Col, Form, Input, InputNumber, Row, Select } from 'antd';
 import { FC } from 'react';
-import ApproximationSelector from '../ApproximationSelector';
 import { DataAndParametersSelectorProps } from './types';
 import s from './s.module.css';
+import { ApproximationSelector } from '@/components';
 
 const MODEL_TYPES = [
   { value: 'maxwell', label: 'Модель Максвелла (σ(t) = σ₀·exp(-t/τ))' },
@@ -11,50 +11,50 @@ const MODEL_TYPES = [
 ];
 
 // eslint-disable-next-line complexity,max-lines-per-function,react/function-component-definition
-const DataAndParametersSelector: FC<DataAndParametersSelectorProps> = ({
-                                                                         type,
-                                                                         data,
-                                                                         selectedXColumn,
-                                                                         selectedYColumn,
-                                                                         onXColumnChange,
-                                                                         onYColumnChange,
+export const DataAndParametersSelector: FC<DataAndParametersSelectorProps> = ({
+  type,
+  data,
+  selectedXColumn,
+  selectedYColumn,
+  onXColumnChange,
+  onYColumnChange,
 
-                                                                         // Полиномиальная аппроксимация
-                                                                         degree,
-                                                                         onDegreeChange,
-                                                                         onCalculatePolynomial,
+  // Полиномиальная аппроксимация
+  degree,
+  onDegreeChange,
+  onCalculatePolynomial,
 
-                                                                         // Экспоненциальная аппроксимация
-                                                                         lambdas = [],
-                                                                         inputLambda = '',
-                                                                         useLinearizedModel = false,
-                                                                         onLambdaChange,
-                                                                         onAddLambda,
-                                                                         onDeleteLambda,
-                                                                         onInputLambdaChange,
-                                                                         onLinearizedModelChange,
-                                                                         onCalculateApproximation,
+  // Экспоненциальная аппроксимация
+  lambdas = [],
+  inputLambda = '',
+  useLinearizedModel = false,
+  onLambdaChange,
+  onAddLambda,
+  onDeleteLambda,
+  onInputLambdaChange,
+  onLinearizedModelChange,
+  onCalculateApproximation,
 
-                                                                         // Линеаризация
-                                                                         modelType = 'maxwell',
-                                                                         onModelTypeChange,
-                                                                         params = { E: null, epsilon: null },
-                                                                         onParamsChange,
-                                                                         onCalculateLinearization
-                                                                       }) => {
+  // Линеаризация
+  modelType = 'maxwell',
+  onModelTypeChange,
+  params = { E: null, epsilon: null },
+  onParamsChange,
+  onCalculateLinearization,
+}) => {
   const columns = data[0] || [];
 
   const handleSelectedXColumnChange = (_, option: any) => {
     onXColumnChange({
       index: option.index,
-      label: option.label
+      label: option.label,
     });
   };
 
   const handleSelectedYColumnChange = (_, option: any) => {
     onYColumnChange({
       index: option.index,
-      label: option.label
+      label: option.label,
     });
   };
 
@@ -62,7 +62,7 @@ const DataAndParametersSelector: FC<DataAndParametersSelectorProps> = ({
     if (onParamsChange) {
       onParamsChange({
         ...params,
-        [key]: value
+        [key]: value,
       });
     }
   };
@@ -80,7 +80,7 @@ const DataAndParametersSelector: FC<DataAndParametersSelectorProps> = ({
           options={columns.map((col, index) => ({
             label: col,
             value: col,
-            index
+            index,
           }))}
           className={s.columnSelect}
         />
@@ -92,7 +92,7 @@ const DataAndParametersSelector: FC<DataAndParametersSelectorProps> = ({
           options={columns.map((col, index) => ({
             label: col,
             value: col,
-            index
+            index,
           }))}
           className={s.columnSelect}
         />
@@ -134,11 +134,7 @@ const DataAndParametersSelector: FC<DataAndParametersSelectorProps> = ({
                 onChange={(e) => onLambdaChange?.(index, e.target.value)}
                 className={s.lambdaInput}
               />
-              {index !== 0 && (
-                <Button onClick={() => onDeleteLambda?.(index)}>
-                  Удалить λ
-                </Button>
-              )}
+              {index !== 0 && <Button onClick={() => onDeleteLambda?.(index)}>Удалить λ</Button>}
             </div>
           ))}
           <div className={s.lambdaControl}>
@@ -164,10 +160,7 @@ const DataAndParametersSelector: FC<DataAndParametersSelectorProps> = ({
             type="primary"
             onClick={onCalculateApproximation}
             className={s.calculateButton}
-            disabled={
-              selectedXColumn.index === null ||
-              selectedYColumn.index === null
-            }
+            disabled={selectedXColumn.index === null || selectedYColumn.index === null}
           >
             Вычислить аппроксимацию
           </Button>
@@ -225,5 +218,3 @@ const DataAndParametersSelector: FC<DataAndParametersSelectorProps> = ({
     </div>
   );
 };
-
-export default DataAndParametersSelector;

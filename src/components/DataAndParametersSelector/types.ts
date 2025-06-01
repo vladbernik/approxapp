@@ -38,6 +38,6 @@ export type DataAndParametersSelectorProps = {
     E: number | null;
     epsilon: number | null;
   };
-  onParamsChange?: (params: { E: number | null, epsilon: number | null }) => void;
+  onParamsChange?: (params: { E: number | null; epsilon: number | null }) => void;
   onCalculateLinearization?: () => void;
 };

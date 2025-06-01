@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import './s.module.css'
+import './s.module.css';
 
-function ExcelTable({
+export function ExcelTable({
   excelData,
   editMode,
   handleDeleteColumn,
@@ -30,14 +30,24 @@ function ExcelTable({
             {excelData[0].map((col, index) => (
               <th key={index} className="column-header">
                 {col}
-                {editMode && <button className="custom-file-upload" onClick={() => handleDeleteColumn(index)}>Delete Column</button>}
+                {editMode && (
+                  <button className="custom-file-upload" onClick={() => handleDeleteColumn(index)}>
+                    Delete Column
+                  </button>
+                )}
                 {showSelectA && (
-                  <button onClick={() => handleSetA(index)} className={`custom-file-upload ${index === selectedColumnA ? 'selected-a' : ''}`}>
+                  <button
+                    onClick={() => handleSetA(index)}
+                    className={`custom-file-upload ${index === selectedColumnA ? 'selected-a' : ''}`}
+                  >
                     Set a
                   </button>
                 )}
                 {showSelectB && (
-                  <button onClick={() => handleSetB(index)} className={`custom-file-upload ${index === selectedColumnB ? 'selected-b' : ''}`}>
+                  <button
+                    onClick={() => handleSetB(index)}
+                    className={`custom-file-upload ${index === selectedColumnB ? 'selected-b' : ''}`}
+                  >
                     Set b
                   </button>
                 )}
@@ -60,12 +70,23 @@ function ExcelTable({
                   )}
                 </td>
               ))}
-              {editMode && <button className="custom-file-upload" onClick={() => handleDeleteRow(rowIndex + 1)}>Delete Row</button>}
+              {editMode && (
+                <button
+                  className="custom-file-upload"
+                  onClick={() => handleDeleteRow(rowIndex + 1)}
+                >
+                  Delete Row
+                </button>
+              )}
             </tr>
           ))}
         </tbody>
       </table>
-      {editMode && <button className="custom-file-upload" onClick={handleSave}>Save</button>}
+      {editMode && (
+        <button className="custom-file-upload" onClick={handleSave}>
+          Save
+        </button>
+      )}
       <div>
         <button className="custom-file-upload" onClick={() => setShowSelectA(!showSelectA)}>
           {showSelectA ? 'Скрыть a' : 'Показать a'}
@@ -77,5 +98,3 @@ function ExcelTable({
     </div>
   );
 }
-
-export default ExcelTable;

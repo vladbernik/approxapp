@@ -1,6 +1,7 @@
 {
   "name": "approx",
   "version": "0.1.0",
+  "homepage": "https://vladbernik.github.io/approxapp/",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

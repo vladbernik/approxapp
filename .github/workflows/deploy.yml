@@ -2,31 +2,30 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [ "main" ]  # Триггер на пуш в main (или master)
+    branches: [ "main" ]
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
+        with:
+          persist-credentials: true
 
-      - name: Setup Node.js
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '20'  # или ваша версия Node.js
+          node-version: 20
 
-      - name: Install dependencies
-        run: npm install  # или yarn install
+      - name: Install and build
+        run: |
+          yarn install
+          yarn run build
 
-      - name: Build project
-        run: npm run build  # или yarn build
-
-      - name: Deploy to GitHub Pages
+      - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./build  # Папка сборки (build/dist)
-          # Если проект в подпапке:
-          # publish_dir: ./subfolder/build
+          publish_dir: ./build
+          force_orphan: true
